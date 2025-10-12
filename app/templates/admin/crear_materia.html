@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Crear materia{% endblock %}
+{% block content %}
+<section class="card form-card">
+  <header class="card__header">
+    <div class="card__icon">
+      <i class="fas fa-book"></i>
+    </div>
+    <div>
+      <h2>Registrar nueva materia</h2>
+      <p>Define la materia para asignarla luego a un plan academico.</p>
+    </div>
+  </header>
+  <form method="post" action="{{ request.url.path }}" class="form" data-loading="true">
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="nombre"><i class="fas fa-heading"></i> Nombre de la materia</label>
+        <input id="nombre" type="text" name="nombre" placeholder="Ej. Algoritmos I" required />
+      </div>
+      <div class="form-group">
+        <label for="codigo"><i class="fas fa-barcode"></i> Codigo</label>
+        <input id="codigo" type="text" name="codigo" placeholder="Ej. ALG101" required />
+      </div>
+      <div class="form-group form-group--full">
+        <label for="descripcion"><i class="fas fa-align-left"></i> Descripcion</label>
+        <textarea
+          id="descripcion"
+          name="descripcion"
+          rows="4"
+          placeholder="Resumen de contenidos, objetivos y carga horaria"
+        ></textarea>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">
+        <i class="fas fa-plus-circle"></i>
+        Crear materia
+      </button>
+    </div>
+  </form>
+</section>
+{% endblock %}

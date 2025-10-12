@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Mis calificaciones{% endblock %}
+{% block content %}
+<section class="card table-card">
+  <header class="card__header">
+    <div class="card__icon">
+      <i class="fas fa-graduation-cap"></i>
+    </div>
+    <div>
+      <h2>Historial de calificaciones</h2>
+      <p>Visualiza tus ultimas evaluaciones y su fecha de registro.</p>
+    </div>
+  </header>
+  <div class="table-responsive">
+    <table class="table table--striped">
+      <thead>
+        <tr>
+          <th>Materia</th>
+          <th>Nota</th>
+          <th>Fecha</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for calificacion in calificaciones %}
+        <tr>
+          <td>{{ materias.get(calificacion.materia_id, calificacion.materia_id) }}</td>
+          <td>
+            <span class="badge badge--primary">
+              <i class="fas fa-star"></i> {{ "%.1f"|format(calificacion.nota) }}
+            </span>
+          </td>
+          <td>{{ calificacion.fecha }}</td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="3">Sin calificaciones registradas todavia.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

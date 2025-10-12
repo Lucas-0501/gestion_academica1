@@ -1,0 +1,48 @@
+<div class="card table-card">
+  <header class="card__header card__header--compact">
+    <div>
+      <h3>Registros de asistencia</h3>
+      <p>Resumen actualizado de tus ultimas marcas.</p>
+    </div>
+    <div class="progress">
+      {% set porcentaje = resumen.porcentaje or 0 %}
+      <span>{{ porcentaje }}%</span>
+      <div class="progress__bar">
+        <span style="width: {{ porcentaje }}%"></span>
+      </div>
+    </div>
+  </header>
+  <div class="table-responsive">
+    <table class="table table--striped">
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Presente</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for registro in registros %}
+        <tr>
+          <td>{{ registro.fecha }}</td>
+          <td>
+            {% if registro.presente %}
+            <span class="badge badge--success"><i class="fas fa-check"></i> Si</span>
+            {% else %}
+            <span class="badge badge--danger"><i class="fas fa-times"></i> No</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="2">Sin registros de asistencia todavia.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="card__footer stats">
+    <span><i class="fas fa-calendar-day"></i> Total: {{ resumen.total | int }}</span>
+    <span><i class="fas fa-person-booth"></i> Presentes: {{ resumen.presentes | int }}</span>
+    <span><i class="fas fa-percent"></i> Porcentaje: {{ resumen.porcentaje }}%</span>
+  </div>
+</div>

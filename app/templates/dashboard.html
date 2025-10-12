@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Panel principal{% endblock %}
+{% block content %}
+{% set ns = namespace(items=[]) %}
+{% for label, icon, route in nav_items or [] %}
+  {% if route not in ["/dashboard", "/auth/logout"] %}
+    {% set _ = ns.items.append((label, icon, route)) %}
+  {% endif %}
+{% endfor %}
+<section class="welcome-card card">
+  <div>
+    <h2>Hola, {{ usuario.nombre.split(' ')[0] }}</h2>
+    <p>Gestiona tus actividades academicas desde este panel central.</p>
+  </div>
+  <i class="fas fa-rocket"></i>
+</section>
+<section class="actions-grid">
+  {% for label, icon, route in ns.items %}
+  <a class="action-card" href="{{ route }}">
+    <div class="action-card__icon">
+      <i class="{{ icon }}"></i>
+    </div>
+    <div>
+      <h3>{{ label }}</h3>
+      <p>Accede rapidamente al flujo de {{ label | lower }}.</p>
+    </div>
+    <i class="fas fa-arrow-right action-card__chevron"></i>
+  </a>
+  {% else %}
+  <div class="card empty-state">
+    <i class="fas fa-circle-info"></i>
+    <p>No hay acciones configuradas para tu rol todavia.</p>
+  </div>
+  {% endfor %}
+</section>
+{% endblock %}

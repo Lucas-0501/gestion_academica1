@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}Gestion Academica{% endblock %}</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', path='/favicon.ico') }}" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}" />
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  </head>
+  <body class="{% if is_auth_page %}auth-layout{% else %}app-layout{% endif %}">
+    {% if is_auth_page %}
+    <main class="auth-wrapper">
+      {% if message %}
+      <div class="banner banner--success">
+        <i class="fas fa-check-circle"></i>
+        <span>{{ message }}</span>
+      </div>
+      {% endif %}
+      {% if error %}
+      <div class="banner banner--error">
+        <i class="fas fa-triangle-exclamation"></i>
+        <span>{{ error }}</span>
+      </div>
+      {% endif %}
+      {% block auth_content %}{% endblock %}
+    </main>
+    {% else %}
+    <header class="navbar">
+      <button class="navbar__toggle" id="sidebarToggle" aria-label="Abrir menu">
+        <i class="fas fa-bars"></i>
+      </button>
+      <div class="navbar__brand">
+        <i class="fas fa-graduation-cap"></i>
+        <span>Sistema de Gestion Academica</span>
+      </div>
+      <div class="navbar__user">
+        <i class="fas fa-user-circle"></i>
+        <div>
+          <span class="navbar__user-name">
+            {{ (usuario.nombre if usuario else 'Sesion activa') }}
+          </span>
+          <small class="navbar__user-role">
+            {{ (usuario.rol|capitalize if usuario else '') }}
+          </small>
+        </div>
+      </div>
+    </header>
+    <div class="layout-wrapper">
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar__content">
+          <nav>
+            <ul>
+              {% for label, icon, route in nav_items or [] %}
+              <li class="{% if request.url.path == route %}active{% endif %}">
+                <a href="{{ route }}">
+                  <i class="{{ icon }}"></i>
+                  <span>{{ label }}</span>
+                </a>
+              </li>
+              {% else %}
+              <li class="empty">
+                <span>No hay acciones disponibles</span>
+              </li>
+              {% endfor %}
+            </ul>
+          </nav>
+        </div>
+      </aside>
+      <main class="content">
+        {% if page_title %}
+        <div class="page-heading">
+          <div>
+            <h1>{{ page_title }}</h1>
+            {% if subtitle %}
+            <p>{{ subtitle }}</p>
+            {% endif %}
+          </div>
+        </div>
+        {% endif %}
+        {% if success %}
+        <div class="banner banner--success">
+          <i class="fas fa-circle-check"></i>
+          <span>{{ success }}</span>
+        </div>
+        {% endif %}
+        {% if error %}
+        <div class="banner banner--error">
+          <i class="fas fa-circle-xmark"></i>
+          <span>{{ error }}</span>
+        </div>
+        {% endif %}
+        {% if info %}
+        <div class="banner banner--info">
+          <i class="fas fa-circle-info"></i>
+          <span>{{ info }}</span>
+        </div>
+        {% endif %}
+        {% block content %}{% endblock %}
+      </main>
+    </div>
+    {% endif %}
+    <div class="spinner" id="loadingSpinner">
+      <div class="spinner__circle"></div>
+      <p>Cargando...</p>
+    </div>
+    <script>
+      const sidebar = document.getElementById("sidebar");
+      const toggle = document.getElementById("sidebarToggle");
+      const spinner = document.getElementById("loadingSpinner");
+      if (toggle && sidebar) {
+        toggle.addEventListener("click", () => {
+          sidebar.classList.toggle("sidebar--open");
+        });
+      }
+      const forms = document.querySelectorAll("form[data-loading='true']");
+      forms.forEach((form) => {
+        form.addEventListener("submit", () => {
+          if (spinner) {
+            spinner.classList.add("spinner--visible");
+          }
+        });
+      });
+      {% block scripts %}{% endblock %}
+    </script>
+  </body>
+</html>

@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Inscripcion a materia{% endblock %}
+{% block content %}
+<section class="card form-card">
+  <header class="card__header">
+    <div class="card__icon card__icon--gradient">
+      <i class="fas fa-book-open"></i>
+    </div>
+    <div>
+      <h2>Inscripcion a materias</h2>
+      <p>Elige la materia a la que deseas inscribirte este periodo.</p>
+    </div>
+  </header>
+  <form method="post" action="{{ request.url.path }}" class="form" data-loading="true">
+    <div class="form-grid">
+      <div class="form-group form-group--full">
+        <label for="materia_id"><i class="fas fa-list-check"></i> Materia disponible</label>
+        <select id="materia_id" name="materia_id" required>
+          <option value="">Seleccionar materia...</option>
+          {% for materia in materias %}
+          <option value="{{ materia.id }}">{{ materia.nombre }} ({{ materia.codigo }})</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">
+        <i class="fas fa-check-circle"></i>
+        Confirmar inscripcion
+      </button>
+    </div>
+  </form>
+</section>
+{% endblock %}

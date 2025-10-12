@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Mi asistencia{% endblock %}
+{% block content %}
+<section class="attendance-grid">
+  <div class="card form-card">
+    <header class="card__header">
+      <div class="card__icon">
+        <i class="fas fa-calendar-check"></i>
+      </div>
+      <div>
+        <h2>Registrar asistencia</h2>
+        <p>Marca tu presencia diaria para llevar el control personal.</p>
+      </div>
+    </header>
+    {% include "asistencia/registrar.html" with context %}
+  </div>
+  {% include "asistencia/consultar.html" with context %}
+</section>
+{% endblock %}

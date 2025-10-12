@@ -1,0 +1,49 @@
+[
+  {
+    "id": "cbf55066-c76c-4b47-9605-351265df5aa9",
+    "nombre": "Administrador General",
+    "email": "admin@demo.com",
+    "password": "1234",
+    "rol": "administrador",
+    "sesion_activa": false,
+    "type": "Administrador"
+  },
+  {
+    "id": "1a69749e-8c73-4376-8216-f5e419e1c70b",
+    "nombre": "Alumno Demo",
+    "email": "alumno1@demo.com",
+    "password": "1234",
+    "rol": "alumno",
+    "sesion_activa": false,
+    "type": "Alumno",
+    "materiasInscripto": [],
+    "examenesInscripto": [],
+    "plan_id": "a37c5b2b-efe3-4873-88aa-d88e512ef569",
+    "cohorte_id": "32017e88-01f5-4fa2-9591-2620db0d4498"
+  },
+  {
+    "id": "40f1affe-c7fa-4ddc-bdae-83ee4541d1c9",
+    "nombre": "Docente Demo",
+    "email": "docente1@demo.com",
+    "password": "1234",
+    "rol": "docente",
+    "sesion_activa": false,
+    "type": "Docente",
+    "materiasAsignadas": []
+  },
+  {
+    "id": "ae3288c6-31d0-4a5d-a14a-fddfc02ee145",
+    "nombre": "hola",
+    "email": "hola@gmail.com",
+    "password": "hola",
+    "rol": "alumno",
+    "sesion_activa": false,
+    "type": "Alumno",
+    "materiasInscripto": [],
+    "examenesInscripto": [
+      "10c415c8-8def-4521-81be-2a6f63f6391e"
+    ],
+    "plan_id": "a37c5b2b-efe3-4873-88aa-d88e512ef569",
+    "cohorte_id": "32017e88-01f5-4fa2-9591-2620db0d4498"
+  }
+]

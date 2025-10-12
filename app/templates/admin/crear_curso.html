@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Crear curso{% endblock %}
+{% block content %}
+<section class="card form-card">
+  <header class="card__header">
+    <div class="card__icon">
+      <i class="fas fa-chalkboard-teacher"></i>
+    </div>
+    <div>
+      <h2>Configurar un nuevo curso</h2>
+      <p>Define materia, cohorte y docente responsable del dictado.</p>
+    </div>
+  </header>
+  <form method="post" action="{{ request.url.path }}" class="form" data-loading="true">
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="nombre"><i class="fas fa-pen-to-square"></i> Nombre del curso</label>
+        <input id="nombre" type="text" name="nombre" placeholder="Ej. Curso Algoritmos - Turno Noche" required />
+      </div>
+      <div class="form-group">
+        <label for="materia_id"><i class="fas fa-book-open"></i> Materia</label>
+        <select id="materia_id" name="materia_id" required>
+          <option value="">Elegir materia...</option>
+          {% for materia in materias %}
+          <option value="{{ materia.id }}">{{ materia.nombre }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="cohorte_id"><i class="fas fa-users-line"></i> Cohorte</label>
+        <select id="cohorte_id" name="cohorte_id">
+          <option value="">Sin cohorte asignada</option>
+          {% for cohorte in cohortes %}
+          <option value="{{ cohorte.id }}">{{ cohorte.nombre }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="docente_id"><i class="fas fa-chalkboard-user"></i> Docente</label>
+        <select id="docente_id" name="docente_id">
+          <option value="">Seleccionar docente...</option>
+          {% for docente in docentes %}
+          <option value="{{ docente.id }}">{{ docente.nombre }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">
+        <i class="fas fa-circle-plus"></i>
+        Crear curso
+      </button>
+    </div>
+  </form>
+</section>
+{% endblock %}

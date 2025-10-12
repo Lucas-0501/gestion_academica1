@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Inscripcion a examen{% endblock %}
+{% block content %}
+<section class="card form-card">
+  <header class="card__header">
+    <div class="card__icon card__icon--gradient">
+      <i class="fas fa-file-alt"></i>
+    </div>
+    <div>
+      <h2>Inscribite al proximo examen</h2>
+      <p>Selecciona fecha y materia para confirmar tu asistencia.</p>
+    </div>
+  </header>
+  <form method="post" action="{{ request.url.path }}" class="form" data-loading="true">
+    <div class="form-grid">
+      <div class="form-group form-group--full">
+        <label for="examen_id"><i class="fas fa-calendar"></i> Examen disponible</label>
+        <select id="examen_id" name="examen_id" required>
+          <option value="">Elegir examen...</option>
+          {% for examen in examenes %}
+          <option value="{{ examen.id }}">
+            {{ materias.get(examen.materia_id, examen.materia_id) }} - {{ examen.fecha }}
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">
+        <i class="fas fa-clipboard-check"></i>
+        Confirmar inscripcion
+      </button>
+    </div>
+  </form>
+</section>
+{% endblock %}

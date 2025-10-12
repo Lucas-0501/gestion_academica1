@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Crear cohorte{% endblock %}
+{% block content %}
+<section class="card form-card">
+  <header class="card__header">
+    <div class="card__icon">
+      <i class="fas fa-users"></i>
+    </div>
+    <div>
+      <h2>Definir nueva cohorte</h2>
+      <p>Organiza grupos de alumnos y vincula el plan correspondiente.</p>
+    </div>
+  </header>
+  <form method="post" action="{{ request.url.path }}" class="form" data-loading="true">
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="nombre"><i class="fas fa-tag"></i> Nombre de cohorte</label>
+        <input id="nombre" type="text" name="nombre" placeholder="Ej. Cohorte 2024 A" required />
+      </div>
+      <div class="form-group">
+        <label for="plan_id"><i class="fas fa-diagram-project"></i> Plan asociado</label>
+        <select id="plan_id" name="plan_id" required>
+          <option value="">Elegir plan...</option>
+          {% for plan in planes %}
+          <option value="{{ plan.id }}">{{ plan.nombre }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group form-group--full">
+        <label for="alumnos_ids"><i class="fas fa-user-graduate"></i> Alumnos</label>
+        <select id="alumnos_ids" name="alumnos_ids" multiple size="8">
+          {% for alumno in alumnos %}
+          <option value="{{ alumno.id }}">{{ alumno.nombre }} - {{ alumno.email }}</option>
+          {% endfor %}
+        </select>
+        <small>Selecciona los alumnos que formaran parte de la cohorte.</small>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">
+        <i class="fas fa-user-group"></i>
+        Crear cohorte
+      </button>
+    </div>
+  </form>
+</section>
+{% endblock %}

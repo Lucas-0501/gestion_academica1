@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Crear plan{% endblock %}
+{% block content %}
+<section class="card form-card">
+  <header class="card__header">
+    <div class="card__icon">
+      <i class="fas fa-diagram-project"></i>
+    </div>
+    <div>
+      <h2>Nuevo plan academico</h2>
+      <p>Estructura las materias y lineamientos para una cohorte.</p>
+    </div>
+  </header>
+  <form method="post" action="{{ request.url.path }}" class="form" data-loading="true">
+    <div class="form-grid">
+      <div class="form-group form-group--full">
+        <label for="nombre"><i class="fas fa-pen"></i> Nombre del plan</label>
+        <input id="nombre" type="text" name="nombre" placeholder="Ej. Plan Ingenieria de Software" required />
+      </div>
+      <div class="form-group form-group--full">
+        <label for="descripcion"><i class="fas fa-align-left"></i> Descripcion</label>
+        <textarea
+          id="descripcion"
+          name="descripcion"
+          rows="4"
+          placeholder="Detalle objetivos, perfil de egreso y criterios."
+        ></textarea>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">
+        <i class="fas fa-save"></i>
+        Guardar plan
+      </button>
+    </div>
+  </form>
+</section>
+{% endblock %}

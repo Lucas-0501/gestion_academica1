@@ -1,0 +1,20 @@
+[
+  {
+    "id": "92c337ac-b1c2-49bd-88bc-56a7dea5526b",
+    "nombre": "Algoritmos",
+    "codigo": "ALG101",
+    "descripcion": "Introducción a la Programación"
+  },
+  {
+    "id": "b420f1c2-1f0e-4606-808e-edf9df54aa35",
+    "nombre": "Bases de Datos",
+    "codigo": "BD201",
+    "descripcion": "Fundamentos de Bases de Datos"
+  },
+  {
+    "id": "f4577219-8ebb-45c6-a850-6790fe8e3333",
+    "nombre": "Quimica",
+    "codigo": "QUIM001",
+    "descripcion": ""
+  }
+]

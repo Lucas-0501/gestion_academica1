@@ -1,0 +1,15 @@
+<form method="post" action="{{ action_url }}" class="form" data-loading="true">
+  <div class="form-group form-group--full">
+    <label for="presente"><i class="fas fa-calendar-check"></i> Confirmas tu asistencia</label>
+    <select id="presente" name="presente" required>
+      <option value="si">Asisti</option>
+      <option value="no">No asisti</option>
+    </select>
+  </div>
+  <div class="form-actions">
+    <button type="submit" class="btn btn-primary">
+      <i class="fas fa-check"></i>
+      Registrar asistencia
+    </button>
+  </div>
+</form>
