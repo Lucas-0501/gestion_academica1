@@ -1,11 +1,6 @@
 <form method="post" action="{{ action_url }}" class="form" data-loading="true">
-  <div class="form-group form-group--full">
-    <label for="presente"><i class="fas fa-calendar-check"></i> Confirmas tu asistencia</label>
-    <select id="presente" name="presente" required>
-      <option value="si">Asisti</option>
-      <option value="no">No asisti</option>
-    </select>
-  </div>
+  <input type="hidden" name="cuatrimestre" value="{{ cuatrimestre }}">
+  <p class="assist-hint"><i class="fas fa-circle-info"></i> El registro marca asistencia presente para la fecha de hoy.</p>
   <div class="form-actions">
     <button type="submit" class="btn btn-primary">
       <i class="fas fa-check"></i>

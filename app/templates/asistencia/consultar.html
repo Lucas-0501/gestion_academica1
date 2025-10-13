@@ -2,7 +2,15 @@
   <header class="card__header card__header--compact">
     <div>
       <h3>Registros de asistencia</h3>
-      <p>Resumen actualizado de tus ultimas marcas.</p>
+      <p>
+        Resumen
+        {% if cuatrimestre_label %}
+        del {{ cuatrimestre_label }}
+        {% else %}
+        del periodo completo
+        {% endif %}
+        ({{ resumen.total | int }} dias habiles esperados).
+      </p>
     </div>
     <div class="progress">
       {% set porcentaje = resumen.porcentaje or 0 %}

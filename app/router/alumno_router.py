@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from typing import List
+from urllib.parse import quote
 
 from fastapi import APIRouter, Form, HTTPException, Request, status
 from fastapi.responses import HTMLResponse, RedirectResponse
@@ -28,15 +29,21 @@ def _require_alumno(request: Request):
 async def inscribirse_materia_view(request: Request) -> HTMLResponse:
     alumno = _require_alumno(request)
     templates = request.app.state.templates
-    materias = service.listarMaterias()
+    materias = service.listarMateriasDisponibles(alumno)
+    plan = service.obtenerPlanDelAlumno(alumno)
+    success = request.query_params.get("success")
+    error = request.query_params.get("error")
     return templates.TemplateResponse(
         "alumno/inscribirse_materia.html",
         {
             "request": request,
             "usuario": alumno,
             "materias": materias,
+            "plan": plan,
             "nav_items": menu_for_role(alumno.rol),
             "page_title": "Inscripcion a materias",
+            "success": success,
+            "error": error,
         },
     )
 
@@ -46,9 +53,16 @@ async def inscribirse_materia_action(
     request: Request, materia_id: str = Form(...)
 ) -> RedirectResponse:
     alumno = _require_alumno(request)
-    service.inscribirseMateria(alumno, materia_id)
+    url = request.url_for("inscribirse_materia_view")
+    try:
+        service.inscribirseMateria(alumno, materia_id)
+    except ValueError:
+        return RedirectResponse(
+            f"{url}?error={quote('La materia no pertenece a tu cohorte')}",
+            status_code=status.HTTP_303_SEE_OTHER,
+        )
     return RedirectResponse(
-        request.url_for("dashboard"),
+        f"{url}?success={quote('Inscripcion realizada correctamente')}",
         status_code=status.HTTP_303_SEE_OTHER,
     )
 
@@ -89,7 +103,14 @@ async def inscribirse_examen_action(
 async def asistencia_view(request: Request) -> HTMLResponse:
     alumno = _require_alumno(request)
     templates = request.app.state.templates
-    asistencia = asistencia_service.consultarAsistencia(alumno.id, alumno.rol)  # type: ignore[arg-type]
+    cuatrimestre = request.query_params.get("cuatrimestre") or "2025Q1"
+    quarters = asistencia_service.listarCuatrimestres()
+    quarters_dict = dict(quarters)
+    if cuatrimestre not in quarters_dict:
+        cuatrimestre = "2025Q1"
+    asistencia = asistencia_service.consultarAsistencia(alumno.id, alumno.rol, cuatrimestre)  # type: ignore[arg-type]
+    success = request.query_params.get("success")
+    error = request.query_params.get("error")
     return templates.TemplateResponse(
         "alumno/asistencia.html",
         {
@@ -98,6 +119,11 @@ async def asistencia_view(request: Request) -> HTMLResponse:
             "registros": asistencia["registros"],
             "resumen": asistencia["resumen"],
             "action_url": request.url_for("alumno_asistencia_action"),
+            "cuatrimestres": quarters,
+            "cuatrimestre": cuatrimestre,
+            "cuatrimestre_label": quarters_dict.get(cuatrimestre),
+            "success": success,
+            "error": error,
             "nav_items": menu_for_role(alumno.rol),
             "page_title": "Mi asistencia",
         },
@@ -107,16 +133,26 @@ async def asistencia_view(request: Request) -> HTMLResponse:
 @router.post("/asistencia", name="alumno_asistencia_action")
 async def asistencia_action(
     request: Request,
-    presente: str = Form(...),
+    cuatrimestre: str = Form("2025Q1"),
 ) -> RedirectResponse:
     alumno = _require_alumno(request)
-    asistencia_service.registrarAsistencia(
-        alumno.id,  # type: ignore[arg-type]
-        alumno.rol,
-        presente == "si",
-    )
+    quarters_dict = dict(asistencia_service.listarCuatrimestres())
+    if cuatrimestre not in quarters_dict:
+        cuatrimestre = "2025Q1"
+    url = request.url_for("alumno_asistencia_view")
+    try:
+        asistencia_service.registrarAsistencia(
+            alumno.id,  # type: ignore[arg-type]
+            alumno.rol,
+            True,
+        )
+    except ValueError:
+        return RedirectResponse(
+            f"{url}?cuatrimestre={cuatrimestre}&error={quote('Ya registraste asistencia para hoy')}",
+            status_code=status.HTTP_303_SEE_OTHER,
+        )
     return RedirectResponse(
-        request.url_for("alumno_asistencia_view"),
+        f"{url}?cuatrimestre={cuatrimestre}&success={quote('Asistencia registrada correctamente')}",
         status_code=status.HTTP_303_SEE_OTHER,
     )
 

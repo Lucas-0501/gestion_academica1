@@ -35,4 +35,153 @@
     </div>
   </form>
 </section>
+
+<section class="card form-card">
+  <header class="card__header">
+    <div class="card__icon">
+      <i class="fas fa-layer-group"></i>
+    </div>
+    <div>
+      <h2>Gestionar planes existentes</h2>
+      <p>Selecciona un plan para visualizarlo, actualizar sus datos o eliminarlo.</p>
+    </div>
+  </header>
+
+  <form method="get" action="{{ request.url.path }}" class="form" data-loading="true">
+    <div class="form-grid">
+      <div class="form-group form-group--full">
+        <label for="plan_id"><i class="fas fa-folder-tree"></i> Seleccionar plan</label>
+        <div class="plan-selector">
+          <select id="plan_id" name="plan_id">
+            <option value="">Elegir plan...</option>
+            {% for plan in planes %}
+            <option value="{{ plan.id }}" {% if selected_plan and plan.id == selected_plan.id %}selected{% endif %}>
+              {{ plan.nombre }}
+            </option>
+            {% endfor %}
+          </select>
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-eye"></i>
+            Ver detalle
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  {% if selected_plan %}
+  <div class="plan-detail">
+    <div class="plan-detail__info">
+      <h3><i class="fas fa-circle-info"></i> Detalle del plan</h3>
+      <p><strong>Nombre:</strong> {{ selected_plan.nombre }}</p>
+      <p><strong>Descripcion:</strong> {{ selected_plan.descripcion or 'Sin descripcion' }}</p>
+      <div class="plan-detail__materias">
+        <h4><i class="fas fa-book"></i> Materias asignadas</h4>
+        {% if plan_materias %}
+        <ul>
+          {% for materia in plan_materias %}
+          <li>{{ materia.nombre }} ({{ materia.codigo }})</li>
+          {% endfor %}
+        </ul>
+        {% else %}
+        <p>No hay materias asignadas a este plan.</p>
+        {% endif %}
+      </div>
+    </div>
+
+    <form method="post" action="{{ url_for('actualizar_plan_action') }}" class="form" data-loading="true">
+      <input type="hidden" name="plan_id" value="{{ selected_plan.id }}" />
+      <div class="form-grid">
+        <div class="form-group form-group--full">
+          <label for="editar_nombre"><i class="fas fa-pen-to-square"></i> Nombre</label>
+          <input id="editar_nombre" name="nombre" type="text" value="{{ selected_plan.nombre }}" required />
+        </div>
+        <div class="form-group form-group--full">
+          <label for="editar_descripcion"><i class="fas fa-align-left"></i> Descripcion</label>
+          <textarea id="editar_descripcion" name="descripcion" rows="3">{{ selected_plan.descripcion }}</textarea>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">
+          <i class="fas fa-floppy-disk"></i>
+          Actualizar plan
+        </button>
+      </div>
+    </form>
+
+    <form method="post" action="{{ url_for('eliminar_plan_action') }}" class="form plan-delete" data-loading="true">
+      <input type="hidden" name="plan_id" value="{{ selected_plan.id }}" />
+      <button type="submit" class="btn btn-danger">
+        <i class="fas fa-trash"></i>
+        Eliminar plan
+      </button>
+    </form>
+
+    <section class="assign-section card">
+      <header class="card__header">
+        <div class="card__icon">
+          <i class="fas fa-sitemap"></i>
+        </div>
+        <div>
+          <h3>Asignar nuevas materias</h3>
+          <p>Selecciona materias disponibles para agregarlas al plan actual.</p>
+        </div>
+      </header>
+      <form method="post" action="{{ url_for('asignar_materia_plan_action') }}" class="form" data-loading="true">
+        <input type="hidden" name="plan_id" value="{{ selected_plan.id }}" />
+        <div class="form-grid">
+          <div class="form-group form-group--full">
+            <label for="materia_filter"><i class="fas fa-magnifying-glass"></i> Filtrar materias por nombre</label>
+            <input id="materia_filter" type="search" placeholder="Ingresa el nombre de la materia" data-filter-target="materia-checkbox" />
+          </div>
+          <div class="form-group form-group--full">
+            <div class="checkbox-grid" id="materiaCheckboxGrid">
+              {% for materia in materias %}
+              {% set asignada = materia.id in selected_plan.materias %}
+              <label class="checkbox-item {% if asignada %}checkbox-item--disabled{% endif %}" data-materia-nombre="{{ materia.nombre | lower }}">
+                <input
+                  type="checkbox"
+                  name="materias_ids"
+                  value="{{ materia.id }}"
+                  {% if asignada %}disabled{% endif %}
+                />
+                <span class="checkbox-item__content">
+                  <strong>{{ materia.nombre }}</strong>
+                  <small>{{ materia.codigo }}</small>
+                  {% if asignada %}
+                  <span class="badge badge--primary"><i class="fas fa-check"></i> Asignada</span>
+                  {% endif %}
+                </span>
+              </label>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-plus-circle"></i>
+            Agregar materias seleccionadas
+          </button>
+        </div>
+      </form>
+    </section>
+  </div>
+  {% endif %}
+</section>
+{% endblock %}
+
+{% block scripts %}
+
+  const filterInput = document.getElementById("materia_filter");
+  const checkboxGrid = document.getElementById("materiaCheckboxGrid");
+  if (filterInput && checkboxGrid) {
+    filterInput.addEventListener("input", (event) => {
+      const term = event.target.value.trim().toLowerCase();
+      checkboxGrid.querySelectorAll(".checkbox-item").forEach((item) => {
+        const nombre = item.dataset.materiaNombre || "";
+        item.style.display = nombre.includes(term) ? "" : "none";
+      });
+    });
+  }
+
 {% endblock %}

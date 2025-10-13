@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from typing import List
+from urllib.parse import quote
 
 from fastapi import APIRouter, Form, HTTPException, Request, status
 from fastapi.responses import HTMLResponse, RedirectResponse
@@ -92,6 +93,21 @@ async def crear_materia_action(
 async def crear_plan_view(request: Request) -> HTMLResponse:
     admin = _require_admin(request)
     templates = request.app.state.templates
+    planes = service.listarPlanes()
+    materias = service.listarMaterias()
+    plan_id = request.query_params.get("plan_id")
+    success = request.query_params.get("success")
+    error = request.query_params.get("error")
+    selected_plan = None
+    plan_materias: List = []
+    if plan_id:
+        try:
+            selected_plan = service.obtenerPlan(plan_id)
+            plan_materias = service.obtenerMateriasDePlan(plan_id)
+        except ValueError:
+            error = "Plan no encontrado"
+            selected_plan = None
+            plan_materias = []
     return templates.TemplateResponse(
         "admin/crear_plan.html",
         {
@@ -99,6 +115,12 @@ async def crear_plan_view(request: Request) -> HTMLResponse:
             "usuario": admin,
             "nav_items": menu_for_role(admin.rol),
             "page_title": "Crear plan",
+            "planes": planes,
+            "materias": materias,
+            "selected_plan": selected_plan,
+            "plan_materias": plan_materias,
+            "success": success,
+            "error": error,
         },
     )
 
@@ -113,6 +135,48 @@ async def crear_plan_action(
     service.crearPlan(admin, nombre, descripcion)
     return RedirectResponse(
         request.url_for("dashboard"),
+        status_code=status.HTTP_303_SEE_OTHER,
+    )
+
+
+@router.post("/plan/actualizar")
+async def actualizar_plan_action(
+    request: Request,
+    plan_id: str = Form(...),
+    nombre: str = Form(...),
+    descripcion: str = Form(""),
+) -> RedirectResponse:
+    _require_admin(request)
+    url = request.url_for("crear_plan_view")
+    try:
+        service.actualizarPlan(plan_id, nombre, descripcion)
+    except ValueError:
+        return RedirectResponse(
+            f"{url}?error={quote('Plan no encontrado')}",
+            status_code=status.HTTP_303_SEE_OTHER,
+        )
+    return RedirectResponse(
+        f"{url}?plan_id={plan_id}&success={quote('Plan actualizado correctamente')}",
+        status_code=status.HTTP_303_SEE_OTHER,
+    )
+
+
+@router.post("/plan/eliminar")
+async def eliminar_plan_action(
+    request: Request,
+    plan_id: str = Form(...),
+) -> RedirectResponse:
+    _require_admin(request)
+    url = request.url_for("crear_plan_view")
+    try:
+        service.eliminarPlan(plan_id)
+    except ValueError:
+        return RedirectResponse(
+            f"{url}?error={quote('Plan no encontrado')}",
+            status_code=status.HTTP_303_SEE_OTHER,
+        )
+    return RedirectResponse(
+        f"{url}?success={quote('Plan eliminado correctamente')}",
         status_code=status.HTTP_303_SEE_OTHER,
     )
 
@@ -143,9 +207,16 @@ async def asignar_materia_plan_action(
     materias_ids: List[str] = Form(default=[]),
 ) -> RedirectResponse:
     _require_admin(request)
-    service.asignarMateriasAPlan(plan_id, materias_ids)
+    url = request.url_for("crear_plan_view")
+    try:
+        service.asignarMateriasAPlan(plan_id, materias_ids)
+    except ValueError:
+        return RedirectResponse(
+            f"{url}?error={quote('Plan no encontrado')}",
+            status_code=status.HTTP_303_SEE_OTHER,
+        )
     return RedirectResponse(
-        request.url_for("dashboard"),
+        f"{url}?plan_id={plan_id}&success={quote('Materias asignadas correctamente')}",
         status_code=status.HTTP_303_SEE_OTHER,
     )
 
@@ -156,15 +227,41 @@ async def crear_cohorte_view(request: Request) -> HTMLResponse:
     templates = request.app.state.templates
     planes = service.listarPlanes()
     alumnos = service.listarAlumnos()
+    cohortes = service.listarCohortes()
+    cohorte_id = request.query_params.get("cohorte_id")
+    success = request.query_params.get("success")
+    error = request.query_params.get("error")
+    selected_cohorte = None
+    cohorte_plan = None
+    cohorte_plan_materias: List = []
+    cohorte_alumnos: List = []
+    if cohorte_id:
+        try:
+            selected_cohorte, cohorte_plan, cohorte_alumnos = service.obtenerDatosCohorte(cohorte_id)
+            if cohorte_plan:
+                cohorte_plan_materias = service.obtenerMateriasDePlan(cohorte_plan.id)  # type: ignore[arg-type]
+        except ValueError:
+            error = "Cohorte no encontrada"
+            selected_cohorte = None
+            cohorte_plan = None
+            cohorte_plan_materias = []
+            cohorte_alumnos = []
     return templates.TemplateResponse(
         "admin/crear_cohorte.html",
         {
             "request": request,
             "planes": planes,
             "alumnos": alumnos,
+            "cohortes": cohortes,
+            "selected_cohorte": selected_cohorte,
+            "cohorte_plan": cohorte_plan,
+            "cohorte_plan_materias": cohorte_plan_materias,
+            "cohorte_alumnos": cohorte_alumnos,
             "usuario": admin,
             "nav_items": menu_for_role(admin.rol),
             "page_title": "Crear cohorte",
+            "success": success,
+            "error": error,
         },
     )
 

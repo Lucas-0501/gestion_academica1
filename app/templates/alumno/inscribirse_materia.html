@@ -8,23 +8,31 @@
     </div>
     <div>
       <h2>Inscripcion a materias</h2>
-      <p>Elige la materia a la que deseas inscribirte este periodo.</p>
+      {% if plan %}
+      <p>Plan asignado: <strong>{{ plan.nombre }}</strong>. Elige una materia disponible.</p>
+      {% else %}
+      <p>No tenes un plan asignado actualmente. Contacta a administracion.</p>
+      {% endif %}
     </div>
   </header>
   <form method="post" action="{{ request.url.path }}" class="form" data-loading="true">
     <div class="form-grid">
       <div class="form-group form-group--full">
         <label for="materia_id"><i class="fas fa-list-check"></i> Materia disponible</label>
-        <select id="materia_id" name="materia_id" required>
+        <select id="materia_id" name="materia_id" required {% if not materias %}disabled{% endif %}>
+          {% if materias %}
           <option value="">Seleccionar materia...</option>
           {% for materia in materias %}
           <option value="{{ materia.id }}">{{ materia.nombre }} ({{ materia.codigo }})</option>
           {% endfor %}
+          {% else %}
+          <option value="">No hay materias disponibles</option>
+          {% endif %}
         </select>
       </div>
     </div>
     <div class="form-actions">
-      <button type="submit" class="btn btn-primary">
+      <button type="submit" class="btn btn-primary" {% if not materias %}disabled{% endif %}>
         <i class="fas fa-check-circle"></i>
         Confirmar inscripcion
       </button>

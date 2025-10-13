@@ -59,6 +59,33 @@ class AdministradorService:
         self.broker.actualizarObjeto(plan)
         return plan
 
+    def obtenerPlan(self, plan_id: str) -> Plan:
+        data = self.broker.obtenerPorId("Plan", plan_id)
+        if not data:
+            raise ValueError("Plan no encontrado")
+        return Plan.from_dict(data)
+
+    def actualizarPlan(self, plan_id: str, nombre: str, descripcion: str) -> Plan:
+        plan = self.obtenerPlan(plan_id)
+        plan.nombre = nombre
+        plan.descripcion = descripcion
+        self.broker.actualizarObjeto(plan)
+        return plan
+
+    def eliminarPlan(self, plan_id: str) -> None:
+        if not self.broker.obtenerPorId("Plan", plan_id):
+            raise ValueError("Plan no encontrado")
+        self.broker.eliminarObjeto("Plan", plan_id)
+
+    def obtenerMateriasDePlan(self, plan_id: str) -> List[Materia]:
+        plan = self.obtenerPlan(plan_id)
+        materias_dict = {materia.id: materia for materia in self.listarMaterias()}
+        return [
+            materias_dict[materia_id]
+            for materia_id in plan.materias
+            if materia_id in materias_dict
+        ]
+
     def crearCohorte(
         self,
         admin: Administrador,
@@ -127,3 +154,23 @@ class AdministradorService:
             item for item in usuarios if item.get("rol") == "alumno"
         ]
         return [Alumno.from_dict(item) for item in alumnos]  # type: ignore[arg-type]
+
+    def obtenerCohorte(self, cohorte_id: str) -> Cohorte:
+        data = self.broker.obtenerPorId("Cohorte", cohorte_id)
+        if not data:
+            raise ValueError("Cohorte no encontrada")
+        return Cohorte.from_dict(data)
+
+    def obtenerDatosCohorte(self, cohorte_id: str) -> tuple[Cohorte, Optional[Plan], List[Alumno]]:
+        cohorte = self.obtenerCohorte(cohorte_id)
+        plan = None
+        if cohorte.plan_id:
+            plan_data = self.broker.obtenerPorId("Plan", cohorte.plan_id)
+            plan = Plan.from_dict(plan_data) if plan_data else None
+        alumnos_map = {alumno.id: alumno for alumno in self.listarAlumnos()}
+        cohorte_alumnos = [
+            alumnos_map[alumno_id]
+            for alumno_id in cohorte.alumnos
+            if alumno_id in alumnos_map
+        ]
+        return cohorte, plan, cohorte_alumnos

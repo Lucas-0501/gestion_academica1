@@ -44,4 +44,73 @@
     </div>
   </form>
 </section>
+
+<section class="card form-card">
+  <header class="card__header">
+    <div class="card__icon">
+      <i class="fas fa-folder-open"></i>
+    </div>
+    <div>
+      <h2>Gestionar cohortes existentes</h2>
+      <p>Selecciona una cohorte para revisar su plan asociado y los alumnos asignados.</p>
+    </div>
+  </header>
+
+  <form method="get" action="{{ request.url.path }}" class="form" data-loading="true">
+    <div class="form-grid">
+      <div class="form-group form-group--full">
+        <label for="cohorte_id"><i class="fas fa-layer-group"></i> Seleccionar cohorte</label>
+        <div class="plan-selector">
+          <select id="cohorte_id" name="cohorte_id">
+            <option value="">Elegir cohorte...</option>
+            {% for cohorte in cohortes %}
+            <option value="{{ cohorte.id }}" {% if selected_cohorte and cohorte.id == selected_cohorte.id %}selected{% endif %}>
+              {{ cohorte.nombre }}
+            </option>
+            {% endfor %}
+          </select>
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-eye"></i>
+            Ver detalle
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  {% if selected_cohorte %}
+  <div class="plan-detail">
+    <div class="plan-detail__info">
+      <h3><i class="fas fa-circle-info"></i> Detalle de cohorte</h3>
+      <p><strong>Nombre:</strong> {{ selected_cohorte.nombre }}</p>
+      <p><strong>Plan asociado:</strong> {{ cohorte_plan.nombre if cohorte_plan else 'Sin plan asignado' }}</p>
+      <div class="plan-detail__materias">
+        <h4><i class="fas fa-book"></i> Materias del plan</h4>
+        {% if cohorte_plan_materias %}
+        <ul>
+          {% for materia in cohorte_plan_materias %}
+          <li>{{ materia.nombre }} ({{ materia.codigo }})</li>
+          {% endfor %}
+        </ul>
+        {% else %}
+        <p>El plan asociado no tiene materias asignadas.</p>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="plan-detail__info">
+      <h3><i class="fas fa-user-graduate"></i> Alumnos de la cohorte</h3>
+      {% if cohorte_alumnos %}
+      <ul class="cohorte-alumnos">
+        {% for alumno in cohorte_alumnos %}
+        <li><strong>{{ alumno.nombre }}</strong> <small>{{ alumno.email }}</small></li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p>No hay alumnos asignados a esta cohorte.</p>
+      {% endif %}
+    </div>
+  </div>
+  {% endif %}
+</section>
 {% endblock %}

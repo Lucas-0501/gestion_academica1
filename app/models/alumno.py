@@ -1,4 +1,4 @@
-"""Alumno domain model."""
+"""Modelo de dominio para un alumno."""
 
 from __future__ import annotations
 
@@ -10,7 +10,7 @@ from .usuario import Usuario
 
 @dataclass
 class Alumno(Usuario):
-    materiasInscripto: List[str] = field(default_factory=list)
+    materiasInscripto: List[str] = field(default_factory=list) 
     examenesInscripto: List[str] = field(default_factory=list)
     plan_id: Optional[str] = None
     cohorte_id: Optional[str] = None

@@ -16,5 +16,23 @@
     "nombre": "Quimica",
     "codigo": "QUIM001",
     "descripcion": ""
+  },
+  {
+    "id": "fff309e1-2bd3-4c62-9db1-3e243defbc1e",
+    "nombre": "Analisis Matematico I",
+    "codigo": "ANMAT01",
+    "descripcion": ""
+  },
+  {
+    "id": "74dad036-5d90-4b98-af98-9b65401247db",
+    "nombre": "Algebra I",
+    "codigo": "ALG01",
+    "descripcion": ""
+  },
+  {
+    "id": "6d643667-8878-4f34-a2e0-f4be0606d5ea",
+    "nombre": "Ciencia, tecnologia y sociedad",
+    "codigo": "CTS01",
+    "descripcion": ""
   }
 ]

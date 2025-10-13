@@ -45,5 +45,31 @@
     ],
     "plan_id": "a37c5b2b-efe3-4873-88aa-d88e512ef569",
     "cohorte_id": "32017e88-01f5-4fa2-9591-2620db0d4498"
+  },
+  {
+    "id": "39aca74a-9635-4b58-96fb-4a4c2d4fab66",
+    "nombre": "Lorenzo de Mauri",
+    "email": "lorenzos.de@comunidad.ub.edu.ar",
+    "password": "1234",
+    "rol": "alumno",
+    "sesion_activa": false,
+    "type": "Alumno",
+    "materiasInscripto": [],
+    "examenesInscripto": [],
+    "plan_id": null,
+    "cohorte_id": null
+  },
+  {
+    "id": "5954a29e-84a7-44ac-b97b-c4603fad3bda",
+    "nombre": "asd",
+    "email": "asd@gmail.com",
+    "password": "1234",
+    "rol": "alumno",
+    "sesion_activa": false,
+    "type": "Alumno",
+    "materiasInscripto": [],
+    "examenesInscripto": [],
+    "plan_id": null,
+    "cohorte_id": null
   }
 ]

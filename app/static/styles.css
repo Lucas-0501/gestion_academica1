@@ -42,7 +42,7 @@ a {
 
 .auth-layout {
   min-height: 100vh;
-  background: linear-gradient(135deg, rgba(75, 0, 130, 0.95), rgba(138, 43, 226, 0.9));
+  background: linear-gradient(135deg, rgba(208, 204, 210, 0.95), rgba(249, 249, 249, 0.9));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -337,6 +337,16 @@ a {
   transform: translateY(-1px);
 }
 
+.btn-danger {
+  background: var(--color-danger);
+  color: #ffffff;
+}
+
+.btn-danger:hover {
+  background: #b12433;
+  transform: translateY(-1px);
+}
+
 .actions-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -482,6 +492,145 @@ a {
 }
 
 .stats span {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.filter-card {
+  margin-bottom: 1.5rem;
+}
+
+.quarter-selector {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.quarter-selector label {
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+  font-weight: 600;
+  color: var(--color-muted);
+}
+
+.quarter-selector select {
+  min-width: 220px;
+  padding: 0.6rem 0.75rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: #ffffff;
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+.plan-selector {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.plan-selector select {
+  min-width: 220px;
+}
+
+.plan-detail {
+  display: grid;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.plan-detail__materias ul {
+  margin: 0.5rem 0 0;
+  padding-left: 1.25rem;
+  color: var(--color-muted);
+  line-height: 1.5;
+}
+
+.plan-detail__materias p {
+  color: var(--color-muted);
+}
+
+.plan-delete {
+  display: inline-flex;
+  margin-top: 0.5rem;
+}
+
+.assign-section {
+  margin-top: 1.5rem;
+}
+
+.checkbox-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.75rem;
+}
+
+.checkbox-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.9rem;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: var(--radius-sm);
+  background: #ffffff;
+  transition: var(--transition);
+}
+
+.checkbox-item input[type="checkbox"] {
+  margin-top: 0.35rem;
+  accent-color: var(--color-primary);
+}
+
+.checkbox-item__content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  color: var(--color-text);
+}
+
+.checkbox-item:hover {
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-1px);
+}
+
+.checkbox-item--disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.checkbox-item--disabled input[type="checkbox"] {
+  cursor: not-allowed;
+}
+
+.cohorte-alumnos {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0 0;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.cohorte-alumnos li {
+  padding: 0.75rem 1rem;
+  background: rgba(75, 0, 130, 0.05);
+  border-radius: var(--radius-sm);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--color-text);
+}
+
+.cohorte-alumnos small {
+  color: var(--color-muted);
+}
+
+.assist-hint {
+  color: var(--color-muted);
+  font-size: 0.9rem;
   display: flex;
   align-items: center;
   gap: 0.4rem;

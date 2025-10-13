@@ -18,7 +18,6 @@ def menu_for_role(rol: str) -> List[MenuItem]:
         "administrador": [
             ("Materias", "fas fa-book", "/admin/crear_materia"),
             ("Planes", "fas fa-diagram-project", "/admin/crear_plan"),
-            ("Asignaciones", "fas fa-sitemap", "/admin/asignar_materia_plan"),
             ("Cohortes", "fas fa-users", "/admin/crear_cohorte"),
             ("Cursos", "fas fa-chalkboard-teacher", "/admin/crear_curso"),
             ("Usuarios", "fas fa-user-plus", "/admin/registrar_usuario"),

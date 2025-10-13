@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from typing import List
+from urllib.parse import quote
 
 from fastapi import APIRouter, Form, HTTPException, Request, status
 from fastapi.responses import HTMLResponse, RedirectResponse
@@ -30,7 +31,14 @@ def _require_docente(request: Request):
 async def asistencia_view(request: Request) -> HTMLResponse:
     docente = _require_docente(request)
     templates = request.app.state.templates
-    asistencia = asistencia_service.consultarAsistencia(docente.id, docente.rol)  # type: ignore[arg-type]
+    cuatrimestre = request.query_params.get("cuatrimestre") or "2025Q1"
+    quarters = asistencia_service.listarCuatrimestres()
+    quarters_dict = dict(quarters)
+    if cuatrimestre not in quarters_dict:
+        cuatrimestre = "2025Q1"
+    asistencia = asistencia_service.consultarAsistencia(docente.id, docente.rol, cuatrimestre)  # type: ignore[arg-type]
+    success = request.query_params.get("success")
+    error = request.query_params.get("error")
     return templates.TemplateResponse(
         "docente/asistencia.html",
         {
@@ -39,6 +47,11 @@ async def asistencia_view(request: Request) -> HTMLResponse:
             "registros": asistencia["registros"],
             "resumen": asistencia["resumen"],
             "action_url": request.url_for("docente_asistencia_action"),
+            "cuatrimestres": quarters,
+            "cuatrimestre": cuatrimestre,
+            "cuatrimestre_label": quarters_dict.get(cuatrimestre),
+            "success": success,
+            "error": error,
             "nav_items": menu_for_role(docente.rol),
             "page_title": "Mi asistencia",
         },
@@ -48,16 +61,26 @@ async def asistencia_view(request: Request) -> HTMLResponse:
 @router.post("/asistencia", name="docente_asistencia_action")
 async def asistencia_action(
     request: Request,
-    presente: str = Form(...),
+    cuatrimestre: str = Form("2025Q1"),
 ) -> RedirectResponse:
     docente = _require_docente(request)
-    asistencia_service.registrarAsistencia(
-        docente.id,  # type: ignore[arg-type]
-        docente.rol,
-        presente == "si",
-    )
+    quarters_dict = dict(asistencia_service.listarCuatrimestres())
+    if cuatrimestre not in quarters_dict:
+        cuatrimestre = "2025Q1"
+    url = request.url_for("docente_asistencia_view")
+    try:
+        asistencia_service.registrarAsistencia(
+            docente.id,  # type: ignore[arg-type]
+            docente.rol,
+            True,
+        )
+    except ValueError:
+        return RedirectResponse(
+            f"{url}?cuatrimestre={cuatrimestre}&error={quote('Ya registraste asistencia para hoy')}",
+            status_code=status.HTTP_303_SEE_OTHER,
+        )
     return RedirectResponse(
-        request.url_for("docente_asistencia_view"),
+        f"{url}?cuatrimestre={cuatrimestre}&success={quote('Asistencia registrada correctamente')}",
         status_code=status.HTTP_303_SEE_OTHER,
     )
 
