@@ -4,11 +4,8 @@ from __future__ import annotations
 
 from typing import Dict, Optional
 
-from app.models.alumno import Alumno
-from app.models.administrador import Administrador
-from app.models.docente import Docente
+from app.models.USRs import Administrador, Alumno, Docente, Usuario
 from app.models.dbbroker import DBBroker
-from app.models.usuario import Usuario
 
 
 class AuthService:

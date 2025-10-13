@@ -10,10 +10,8 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette.middleware.sessions import SessionMiddleware
 
-from app.models.administrador import Administrador
-from app.models.alumno import Alumno
+from app.models.USRs import Administrador, Alumno, Docente
 from app.models.dbbroker import DBBroker
-from app.models.docente import Docente
 from app.models.examen import Examen
 from app.models.materia import Materia
 from app.models.plan import Plan

@@ -1,15 +1,13 @@
-"""Capa de servicios para los casos de uso de administrador."""
+
 
 from __future__ import annotations
 
 from typing import List, Optional
 
-from app.models.administrador import Administrador
-from app.models.alumno import Alumno
+from app.models.USRs import Administrador, Alumno, Docente
 from app.models.cohorte import Cohorte
 from app.models.curso import Curso
 from app.models.dbbroker import DBBroker
-from app.models.docente import Docente
 from app.models.materia import Materia
 from app.models.plan import Plan
 

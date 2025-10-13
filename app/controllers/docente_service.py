@@ -7,7 +7,7 @@ from typing import List, Optional
 
 from app.models.calificacion import Calificacion
 from app.models.dbbroker import DBBroker
-from app.models.docente import Docente
+from app.models.USRs import Docente
 from app.models.materia import Materia
 
 

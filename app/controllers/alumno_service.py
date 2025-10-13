@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import List, Optional, Set
 
-from app.models.alumno import Alumno
+from app.models.USRs import Alumno
 from app.models.calificacion import Calificacion
 from app.models.dbbroker import DBBroker
 from app.models.examen import Examen

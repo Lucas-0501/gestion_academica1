@@ -7,10 +7,7 @@ from typing import Any, Dict, Optional
 from fastapi import HTTPException, Request, status
 
 from app.models.dbbroker import DBBroker
-from app.models.usuario import Usuario
-from app.models.alumno import Alumno
-from app.models.docente import Docente
-from app.models.administrador import Administrador
+from app.models.USRs import Administrador, Alumno, Docente, Usuario
 
 
 SESSION_USER_KEY = "sesion_usuario_id"

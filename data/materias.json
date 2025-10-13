@@ -34,5 +34,11 @@
     "nombre": "Ciencia, tecnologia y sociedad",
     "codigo": "CTS01",
     "descripcion": ""
+  },
+  {
+    "id": "7a607337-eb58-4c2b-a44e-b4ffca8caa7d",
+    "nombre": "algebra 2",
+    "codigo": "ALG02",
+    "descripcion": "asd"
   }
 ]
