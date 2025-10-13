@@ -306,6 +306,211 @@ a {
   outline: none;
 }
 
+.student-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.student-picker__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.student-picker__summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  color: var(--color-muted);
+}
+
+.student-picker__summary i {
+  color: var(--color-primary);
+}
+
+.student-picker__clear {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: none;
+  background: transparent;
+  color: var(--color-primary);
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.4rem 0.6rem;
+  border-radius: var(--radius-sm);
+  transition: background 0.2s ease;
+}
+
+.student-picker__clear:hover {
+  background: rgba(75, 0, 130, 0.08);
+}
+
+.student-picker__clear.is-disabled {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+.student-picker__controls {
+  position: relative;
+}
+
+.student-picker__icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-muted);
+  font-size: 0.95rem;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.student-picker__search {
+  width: 100%;
+  padding: 0.75rem 1rem 0.75rem 3rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: #fdfdfd;
+  font-size: 1rem;
+  transition: var(--transition);
+}
+
+.student-picker__search:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(75, 0, 130, 0.12);
+  outline: none;
+}
+
+.student-picker__list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 0.75rem;
+  max-height: 280px;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: var(--radius-sm);
+  background: #fdfdfd;
+  overflow-y: auto;
+  align-content: start;
+}
+
+.student-picker__item {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto auto 1fr auto;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.7rem 0.8rem;
+  border-radius: var(--radius-sm);
+  background: #ffffff;
+  border: 1px solid transparent;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  cursor: pointer;
+}
+
+.student-picker__item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(75, 0, 130, 0.12);
+}
+
+.student-picker__item.is-selected {
+  border-color: rgba(75, 0, 130, 0.28);
+  box-shadow: 0 0 0 3px rgba(75, 0, 130, 0.18);
+}
+
+.student-picker__checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--color-primary);
+}
+
+.student-picker__checkbox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.student-picker__avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-weight: 600;
+  color: #ffffff;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+  flex-shrink: 0;
+}
+
+.student-picker__info {
+  display: grid;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.student-picker__name {
+  font-weight: 600;
+}
+
+.student-picker__email {
+  font-size: 0.85rem;
+  color: var(--color-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.student-picker__checkmark {
+  color: var(--color-success);
+  opacity: 0;
+  transform: scale(0.8);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.student-picker__item.is-selected .student-picker__checkmark {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.student-picker__item.is-hidden {
+  display: none;
+}
+
+.student-picker__divider {
+  grid-column: 1 / -1;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-muted);
+  padding: 0.2rem 0.2rem 0.2rem 0.35rem;
+}
+
+.student-picker__divider.is-hidden {
+  display: none;
+}
+
+.student-picker__empty {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--color-muted);
+  grid-column: 1 / -1;
+  padding: 0.5rem;
+  text-align: center;
+}
+
+@media (max-width: 640px) {
+  .student-picker__list {
+    grid-template-columns: 1fr;
+  }
+}
+
 .form-actions {
   display: flex;
   justify-content: flex-end;

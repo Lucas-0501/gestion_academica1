@@ -1,4 +1,4 @@
-"""Session helper utilities."""
+"""Utilidades para el manejo de la sesión."""
 
 from __future__ import annotations
 

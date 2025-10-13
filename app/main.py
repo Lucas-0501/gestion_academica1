@@ -1,4 +1,4 @@
-"""FastAPI application bootstrap for the academic management system."""
+"""Punto de arranque de la aplicación FastAPI del sistema de gestión académica."""
 
 from __future__ import annotations
 

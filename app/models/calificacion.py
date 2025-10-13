@@ -1,4 +1,4 @@
-"""Calificacion domain model."""
+"""Modelo de dominio para calificación."""
 
 from __future__ import annotations
 

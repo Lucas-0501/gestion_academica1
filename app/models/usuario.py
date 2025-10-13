@@ -1,4 +1,4 @@
-"""Domain model definitions for system users."""
+"""Definiciones de modelos de dominio para los usuarios del sistema."""
 
 from __future__ import annotations
 
@@ -8,7 +8,7 @@ from typing import Any, Dict, Optional
 
 @dataclass
 class Usuario:
-    """Base class for all system users."""
+    """Clase base para todos los usuarios del sistema."""
 
     id: Optional[str]
     nombre: str

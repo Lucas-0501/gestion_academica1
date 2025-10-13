@@ -1,4 +1,4 @@
-"""Administrador endpoints covering CU-002 to CU-007."""
+"""Endpoints de administrador que cubren los CU-002 al CU-007."""
 
 from __future__ import annotations
 

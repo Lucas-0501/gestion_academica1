@@ -1,4 +1,4 @@
-"""Authentication endpoints and shared dashboard."""
+"""Endpoints de autenticación y panel compartido."""
 
 from __future__ import annotations
 

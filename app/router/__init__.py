@@ -1,4 +1,4 @@
-"""Router package exports."""
+"""Exportaciones del paquete de routers."""
 
 from . import admin_router, alumno_router, auth_router, docente_router
 

@@ -1,4 +1,4 @@
-"""Asistencia domain model."""
+"""Modelo de dominio para asistencia."""
 
 from __future__ import annotations
 

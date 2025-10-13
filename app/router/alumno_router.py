@@ -1,4 +1,4 @@
-"""Alumno endpoints covering CU-008 to CU-012."""
+"""Endpoints de alumno que cubren los CU-008 al CU-012."""
 
 from __future__ import annotations
 

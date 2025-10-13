@@ -10,3 +10,4 @@
 ## TODO
 - Mostrar a cada alumno su cohorte/plan asignado en el dashboard.
 - Definir correlativas al crear materias, utilizando checkboxes sobre la lista existente.
+- Los examenes tienen que mostrar la materia a la que pertenecen. y las correlativas que se deben aprobar para rendirlos.

@@ -1,4 +1,4 @@
-"""Materia domain model."""
+"""Modelo de dominio para materia."""
 
 from __future__ import annotations
 

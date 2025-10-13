@@ -1,4 +1,4 @@
-"""Application service for authentication workflows."""
+"""Servicio de aplicación para los flujos de autenticación."""
 
 from __future__ import annotations
 

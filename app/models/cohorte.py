@@ -1,4 +1,4 @@
-"""Cohorte domain model."""
+"""Modelo de dominio para cohorte."""
 
 from __future__ import annotations
 

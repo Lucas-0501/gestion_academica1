@@ -27,13 +27,66 @@
         </select>
       </div>
       <div class="form-group form-group--full">
-        <label for="alumnos_ids"><i class="fas fa-user-graduate"></i> Alumnos</label>
-        <select id="alumnos_ids" name="alumnos_ids" multiple size="8">
-          {% for alumno in alumnos %}
-          <option value="{{ alumno.id }}">{{ alumno.nombre }} - {{ alumno.email }}</option>
-          {% endfor %}
-        </select>
-        <small>Selecciona los alumnos que formaran parte de la cohorte.</small>
+        <label for="alumno-search"><i class="fas fa-user-graduate"></i> Alumnos</label>
+        <div class="student-picker">
+          <div class="student-picker__top">
+            <div class="student-picker__summary" aria-live="polite">
+              <i class="fas fa-user-check" aria-hidden="true"></i>
+              <span><strong id="studentSelectedCount">0</strong> seleccionados</span>
+            </div>
+            <button type="button" class="student-picker__clear" id="studentClearSelection">
+              <i class="fas fa-eraser" aria-hidden="true"></i>
+              Limpiar
+            </button>
+          </div>
+          <div class="student-picker__controls">
+            <i class="fas fa-search student-picker__icon" aria-hidden="true"></i>
+            <input
+              id="alumno-search"
+              type="search"
+              placeholder="Buscar por nombre o email"
+              class="student-picker__search"
+              autocomplete="off"
+            />
+          </div>
+          <div class="student-picker__list" id="alumno-list">
+            {% set ns = namespace(current_initial='') %}
+            {% for alumno in alumnos|sort(attribute='nombre') %}
+            {% set initial = alumno.nombre[:1]|upper if alumno.nombre else '?' %}
+            {% if initial != ns.current_initial %}
+            <div class="student-picker__divider" data-letter="{{ initial }}">{{ initial }}</div>
+            {% set ns.current_initial = initial %}
+            {% endif %}
+            <label
+              class="student-picker__item"
+              data-search-text="{{ (alumno.nombre ~ ' ' ~ alumno.email)|lower }}"
+              data-letter="{{ initial }}"
+            >
+              <span class="student-picker__checkbox">
+                <input type="checkbox" name="alumnos_ids" value="{{ alumno.id }}" />
+              </span>
+              <span class="student-picker__avatar" aria-hidden="true">{{ initial }}</span>
+              <span class="student-picker__info">
+                <span class="student-picker__name">{{ alumno.nombre }}</span>
+                <span class="student-picker__email">{{ alumno.email }}</span>
+              </span>
+              <i class="fas fa-circle-check student-picker__checkmark" aria-hidden="true"></i>
+            </label>
+            {% endfor %}
+            <p
+              class="student-picker__empty"
+              data-empty-message
+              {% if alumnos %}hidden{% endif %}
+            >
+              {% if alumnos %}
+              No se encontraron alumnos con ese criterio.
+              {% else %}
+              No hay alumnos disponibles para asignar.
+              {% endif %}
+            </p>
+          </div>
+        </div>
+        <small>Marca los alumnos que formaran parte de la cohorte.</small>
       </div>
     </div>
     <div class="form-actions">
@@ -113,4 +166,102 @@
   </div>
   {% endif %}
 </section>
+{% endblock %}
+{% block scripts %}
+const alumnoSearchInput = document.getElementById("alumno-search");
+const alumnoList = document.getElementById("alumno-list");
+if (alumnoList) {
+  const items = Array.from(alumnoList.querySelectorAll(".student-picker__item"));
+  const dividers = Array.from(alumnoList.querySelectorAll(".student-picker__divider"));
+  const emptyMessage = alumnoList.querySelector("[data-empty-message]");
+  const countElement = document.getElementById("studentSelectedCount");
+  const clearButton = document.getElementById("studentClearSelection");
+
+  if (clearButton && items.length === 0) {
+    clearButton.hidden = true;
+  }
+
+  const updateSelectedCount = () => {
+    let selectedTotal = 0;
+    items.forEach((item) => {
+      const checkbox = item.querySelector("input[type='checkbox']");
+      const isSelected = checkbox ? checkbox.checked : false;
+      item.classList.toggle("is-selected", isSelected);
+      if (isSelected) {
+        selectedTotal += 1;
+      }
+    });
+    if (countElement) {
+      countElement.textContent = String(selectedTotal);
+    }
+    if (clearButton) {
+      clearButton.disabled = selectedTotal === 0;
+      clearButton.classList.toggle("is-disabled", selectedTotal === 0);
+    }
+  };
+
+  const updateDividersVisibility = () => {
+    dividers.forEach((divider) => {
+      const letter = divider.dataset.letter;
+      const hasVisibleItems = items.some(
+        (item) => !item.classList.contains("is-hidden") && item.dataset.letter === letter
+      );
+      divider.classList.toggle("is-hidden", !hasVisibleItems);
+    });
+  };
+
+  const updateVisibility = () => {
+    const term = alumnoSearchInput ? alumnoSearchInput.value.trim().toLowerCase() : "";
+    let visibleCount = 0;
+    items.forEach((item) => {
+      const text = item.getAttribute("data-search-text") || "";
+      const isMatch = !term || text.includes(term);
+      item.classList.toggle("is-hidden", !isMatch);
+      if (isMatch) {
+        visibleCount += 1;
+      }
+    });
+    updateDividersVisibility();
+    if (emptyMessage) {
+      if (items.length === 0) {
+        emptyMessage.hidden = false;
+        emptyMessage.textContent = "No hay alumnos disponibles para asignar.";
+      } else if (visibleCount === 0) {
+        emptyMessage.hidden = false;
+        emptyMessage.textContent = "No se encontraron alumnos con ese criterio.";
+      } else {
+        emptyMessage.hidden = true;
+      }
+    }
+  };
+
+  items.forEach((item) => {
+    const checkbox = item.querySelector("input[type='checkbox']");
+    if (checkbox) {
+      checkbox.addEventListener("change", updateSelectedCount);
+    }
+  });
+
+  if (clearButton) {
+    clearButton.addEventListener("click", () => {
+      items.forEach((item) => {
+        const checkbox = item.querySelector("input[type='checkbox']");
+        if (checkbox) {
+          checkbox.checked = false;
+        }
+      });
+      updateSelectedCount();
+    });
+  }
+
+  if (alumnoSearchInput) {
+    alumnoSearchInput.addEventListener("input", () => {
+      updateVisibility();
+      updateSelectedCount();
+    });
+  }
+
+  updateVisibility();
+  updateSelectedCount();
+}
 {% endblock %}

@@ -1,4 +1,4 @@
-"""Service layer for alumno use cases."""
+"""Capa de servicios para los casos de uso del alumno."""
 
 from __future__ import annotations
 

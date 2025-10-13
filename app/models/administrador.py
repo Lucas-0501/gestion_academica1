@@ -1,4 +1,4 @@
-"""Administrador domain model."""
+"""Modelo de dominio para administrador."""
 
 from __future__ import annotations
 

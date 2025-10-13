@@ -1,4 +1,4 @@
-"""In-memory broker that simulates database persistence."""
+"""Broker en memoria que simula la persistencia de la base de datos."""
 
 from __future__ import annotations
 
@@ -12,7 +12,7 @@ T = TypeVar("T")
 
 
 class DBBroker:
-    """Singleton that manages storage for domain entities."""
+    """Singleton que administra el almacenamiento de las entidades de dominio."""
 
     _instance: Optional["DBBroker"] = None
     _lock = threading.Lock()
@@ -58,7 +58,7 @@ class DBBroker:
         return obj.id
 
     def guardarObjeto(self, obj: Any) -> Dict[str, Any]:
-        """Persist a new domain object."""
+        """Persiste un nuevo objeto de dominio."""
         collection = self._resolve_collection(obj.__class__.__name__)
         self._ensure_id(obj)
         data = obj.to_dict()
@@ -70,7 +70,7 @@ class DBBroker:
         return data
 
     def obtener(self, clase: Type[T], obj_id: str) -> Optional[Dict[str, Any]]:
-        """Retrieve raw data for the given class and id."""
+        """Recupera los datos sin procesar para la clase e id indicados."""
         collection = (
             clase.__name__ if not isinstance(clase, str) else clase
         )
@@ -120,7 +120,7 @@ class DBBroker:
     def addList(
         self, clase: str, obj_id: str, field: str, values: List[Any]
     ) -> Dict[str, Any]:
-        """Append values into a list attribute and persist the parent object."""
+        """Agrega valores a una lista y persiste el objeto padre."""
         canonical = self._resolve_collection(clase)
         record = self.obtenerPorId(canonical, obj_id)
         if record is None:
@@ -133,7 +133,7 @@ class DBBroker:
         return record
 
     def reset_store(self) -> None:
-        """Utility for tests to clear the in-memory store."""
+        """Utilidad para pruebas que limpia el almacén en memoria."""
         for collection in self._store:
             self._store[collection] = []
             self._persist(collection)

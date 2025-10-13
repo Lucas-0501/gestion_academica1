@@ -1,1 +1,1 @@
-"""Controllers (services) package."""
+"""Paquete de controladores (servicios)."""

@@ -1,4 +1,4 @@
-"Curso domain model."
+"""Modelo de dominio para curso."""
 
 from __future__ import annotations
 

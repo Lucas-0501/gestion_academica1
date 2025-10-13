@@ -1,4 +1,4 @@
-"""Utility helpers to persist domain objects in JSON files."""
+"""Utilidades para persistir objetos de dominio en archivos JSON."""
 
 from __future__ import annotations
 
@@ -8,7 +8,7 @@ from typing import Any, Dict, List
 
 
 class Mapper:
-    """Basic mapper that persists collections as JSON lists."""
+    """Mapper básico que guarda colecciones como listas JSON."""
 
     _DATA_DIR = Path(__file__).resolve().parents[2] / "data"
     _FILE_MAP = {

@@ -1,4 +1,4 @@
-"""Service layer for administrator use cases."""
+"""Capa de servicios para los casos de uso de administrador."""
 
 from __future__ import annotations
 

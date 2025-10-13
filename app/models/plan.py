@@ -1,4 +1,4 @@
-"""Plan Academico domain model."""
+"""Modelo de dominio para el plan académico."""
 
 from __future__ import annotations
 

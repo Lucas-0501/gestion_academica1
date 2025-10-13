@@ -1,1 +1,1 @@
-"""Application package for gestion academica."""
+"""Paquete principal de la aplicación de gestión académica."""

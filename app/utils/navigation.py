@@ -1,4 +1,4 @@
-"""Navigation helpers for building role-based menus."""
+"""Ayudantes de navegación para construir menús según el rol."""
 
 from __future__ import annotations
 
@@ -9,7 +9,7 @@ MenuItem = Tuple[str, str, str]
 
 
 def menu_for_role(rol: str) -> List[MenuItem]:
-    """Return label, icon class, and route for sidebar navigation."""
+    """Devuelve etiqueta, ícono y ruta para la navegación lateral."""
     common: List[MenuItem] = [
         ("Inicio", "fas fa-home", "/dashboard"),
         ("Salir", "fas fa-sign-out-alt", "/auth/logout"),
@@ -34,7 +34,7 @@ def menu_for_role(rol: str) -> List[MenuItem]:
         ],
     }
     combined = role_specific.get(rol, [])
-    # Combine unique items preserving order, avoid duplicates for Inicio/Salir
+    # Combina elementos únicos manteniendo el orden y evita duplicados de Inicio/Salir
     menu: List[MenuItem] = []
     seen_routes = set()
     for label, icon, route in combined + common:

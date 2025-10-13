@@ -1,4 +1,4 @@
-"""Shared service for attendance workflows."""
+"""Servicio compartido para los flujos de asistencia."""
 
 from __future__ import annotations
 

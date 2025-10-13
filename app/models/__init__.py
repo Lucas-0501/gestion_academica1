@@ -1,1 +1,1 @@
-"""Domain model package."""
+"""Paquete de modelos de dominio."""
