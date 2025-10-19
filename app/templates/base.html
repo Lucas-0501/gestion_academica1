@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{% block title %}Gestion Academica{% endblock %}</title>
-    <link rel="icon" type="image/x-icon" href="{{ url_for('static', path='/favicon.ico') }}" />
+    <link rel="icon" type="image/webp" sizes="32x68" href="{{ url_for('static', path='/img/LogoBlancoTransparente.webp') }}" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -37,8 +37,18 @@
         <i class="fas fa-bars"></i>
       </button>
       <div class="navbar__brand">
-        <i class="fas fa-graduation-cap"></i>
+        <img
+          src="{{ url_for('static', path='/img/Universidad_belgrano_logo23.png') }}"
+          alt="Universidad de Belgrano"
+          class="navbar__brand-logo"
+        />
         <span>Sistema de Gestion Academica</span>
+      </div>
+      <div class="navbar__emblem">
+        <img
+          src="{{ url_for('static', path='/img/Logo_Univ_Belgrano_positivo_color.jpg') }}"
+          alt="Universidad de Belgrano"
+        />
       </div>
       <div class="navbar__user">
         <i class="fas fa-user-circle"></i>

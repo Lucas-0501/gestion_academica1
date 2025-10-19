@@ -2,10 +2,10 @@
 {% block title %}Iniciar sesion - Gestion Academica{% endblock %}
 {% block auth_content %}
 <section class="auth-card fade-in">
+  <div class="auth-card__logo">
+    <img src="{{ url_for('static', path='/img/Universidad_belgrano_logo23.png') }}" alt="Universidad de Belgrano" />
+  </div>
   <div class="auth-card__header">
-    <div class="auth-card__icon">
-      <i class="fas fa-school"></i>
-    </div>
     <div>
       <h1>Sistema de Gestión Académica</h1>
       <p>Ingresa con tus credenciales institucionales.</p>
