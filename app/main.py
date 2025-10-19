@@ -116,8 +116,11 @@ def _seed_examenes(broker: DBBroker) -> None:
             primer_materia = materias[0]
             examen = Examen(
                 id=None,
+                nombre="Examen Inicial",
                 materia_id=primer_materia["id"],
                 fecha="2024-07-01",
+                curso_id=None,
+                correlativas=[],
             )
             broker.guardarObjeto(examen)
 

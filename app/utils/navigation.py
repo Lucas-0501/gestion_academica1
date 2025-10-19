@@ -20,6 +20,7 @@ def menu_for_role(rol: str) -> List[MenuItem]:
             ("Planes", "fas fa-diagram-project", "/admin/crear_plan"),
             ("Cohortes", "fas fa-users", "/admin/crear_cohorte"),
             ("Cursos", "fas fa-chalkboard-teacher", "/admin/crear_curso"),
+            ("Examenes", "fas fa-file-pen", "/admin/examenes"),
             ("Usuarios", "fas fa-user-plus", "/admin/registrar_usuario"),
         ],
         "alumno": [

@@ -39,4 +39,19 @@
     </div>
   </form>
 </section>
+<section class="card info-card">
+  <h3>Materias inscriptas</h3>
+  {% if materias_inscriptas %}
+  <div class="info-card__body">
+    {% for materia in materias_inscriptas %}
+    <article class="exam-detail">
+      <h4>{{ materia.nombre }}</h4>
+      <p><strong>Codigo:</strong> {{ materia.codigo }}</p>
+    </article>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="empty-state">Todavia no te inscribiste a ninguna materia.</p>
+  {% endif %}
+</section>
 {% endblock %}

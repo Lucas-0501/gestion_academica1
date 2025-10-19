@@ -13,6 +13,29 @@
     <p>Gestiona tus actividades academicas desde este panel central.</p>
   </div>
 </section>
+{% if usuario.rol == "alumno" %}
+<section class="card assignment-card">
+  <h3>Mi posicion academica</h3>
+  <ul class="assignment-card__list">
+    <li>
+      <strong>Plan academico:</strong>
+      {% if plan_actual %}
+        {{ plan_actual.nombre }}
+      {% else %}
+        Sin plan asignado
+      {% endif %}
+    </li>
+    <li>
+      <strong>Cohorte:</strong>
+      {% if cohorte_actual %}
+        {{ cohorte_actual.nombre }}
+      {% else %}
+        Sin cohorte asignada
+      {% endif %}
+    </li>
+  </ul>
+</section>
+{% endif %}
 <section class="actions-grid">
   {% for label, icon, route in ns.items %}
   <a class="action-card" href="{{ route }}">

@@ -7,6 +7,7 @@ from typing import List, Optional, Set
 from app.models.USRs import Alumno
 from app.models.calificacion import Calificacion
 from app.models.dbbroker import DBBroker
+from app.models.curso import Curso
 from app.models.examen import Examen
 from app.models.materia import Materia
 from app.models.plan import Plan
@@ -40,8 +41,21 @@ class AlumnoService:
             if materia_id in materias_dict
         ]
 
+    def listarMateriasInscriptas(self, alumno: Alumno) -> List[Materia]:
+        materias_dict = {
+            materia.id: materia for materia in self.listarMaterias() if materia.id
+        }
+        return [
+            materias_dict[materia_id]
+            for materia_id in alumno.materiasInscripto
+            if materia_id in materias_dict
+        ]
+
     def listarExamenes(self) -> List[Examen]:
         return [Examen.from_dict(item) for item in self.broker.listar("Examen")]
+
+    def listarCursos(self) -> List[Curso]:
+        return [Curso.from_dict(item) for item in self.broker.listar("Curso")]
 
     def inscribirseMateria(self, alumno: Alumno, materia_id: str) -> Alumno:
         disponibles: Set[str] = {materia.id for materia in self.listarMateriasDisponibles(alumno)}

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from datetime import date
 from typing import List
 from urllib.parse import quote
 
@@ -31,6 +32,7 @@ async def inscribirse_materia_view(request: Request) -> HTMLResponse:
     templates = request.app.state.templates
     materias = service.listarMateriasDisponibles(alumno)
     plan = service.obtenerPlanDelAlumno(alumno)
+    materias_inscriptas = service.listarMateriasInscriptas(alumno)
     success = request.query_params.get("success")
     error = request.query_params.get("error")
     return templates.TemplateResponse(
@@ -40,6 +42,7 @@ async def inscribirse_materia_view(request: Request) -> HTMLResponse:
             "usuario": alumno,
             "materias": materias,
             "plan": plan,
+            "materias_inscriptas": materias_inscriptas,
             "nav_items": menu_for_role(alumno.rol),
             "page_title": "Inscripcion a materias",
             "success": success,
@@ -72,14 +75,52 @@ async def inscribirse_examen_view(request: Request) -> HTMLResponse:
     alumno = _require_alumno(request)
     templates = request.app.state.templates
     examenes = service.listarExamenes()
-    materias = {materia.id: materia.nombre for materia in service.listarMaterias()}
+    materias = {
+        materia.id: materia
+        for materia in service.listarMaterias()
+        if materia.id
+    }
+    cursos = {
+        curso.id: curso
+        for curso in service.listarCursos()
+        if curso.id
+    }
+    hoy = date.today()
+    examenes_detalle = []
+    examenes_inscriptos = []
+    for examen in examenes:
+        materia = materias.get(examen.materia_id)
+        correlativas = [
+            materias[correlativa_id].nombre
+            for correlativa_id in examen.correlativas
+            if correlativa_id in materias
+        ]
+        curso = cursos.get(examen.curso_id)
+        detalle = {
+            "examen": examen,
+            "materia_nombre": materia.nombre if materia else examen.materia_id,
+            "correlativas": correlativas,
+            "curso_nombre": curso.nombre if curso else None,
+        }
+        examenes_detalle.append(detalle)
+        if examen.id and examen.id in alumno.examenesInscripto:
+            try:
+                fecha_examen = date.fromisoformat(examen.fecha)
+            except ValueError:
+                fecha_examen = None
+            examenes_inscriptos.append(
+                {
+                    **detalle,
+                    "es_pasado": fecha_examen < hoy if fecha_examen else False,
+                }
+            )
     return templates.TemplateResponse(
         "alumno/inscribirse_examen.html",
         {
             "request": request,
             "usuario": alumno,
-            "examenes": examenes,
-            "materias": materias,
+            "examenes_detalle": examenes_detalle,
+            "examenes_inscriptos": examenes_inscriptos,
             "nav_items": menu_for_role(alumno.rol),
             "page_title": "Inscripcion a examenes",
         },

@@ -63,6 +63,7 @@ async def registrar_usuario_action(
 async def crear_materia_view(request: Request) -> HTMLResponse:
     admin = _require_admin(request)
     templates = request.app.state.templates
+    materias = service.listarMaterias()
     return templates.TemplateResponse(
         "admin/crear_materia.html",
         {
@@ -70,6 +71,7 @@ async def crear_materia_view(request: Request) -> HTMLResponse:
             "usuario": admin,
             "nav_items": menu_for_role(admin.rol),
             "page_title": "Crear materia",
+            "materias": materias,
         },
     )
 
@@ -80,9 +82,10 @@ async def crear_materia_action(
     nombre: str = Form(...),
     codigo: str = Form(...),
     descripcion: str = Form(""),
+    correlativas: List[str] = Form(default=[]),
 ) -> RedirectResponse:
     admin = _require_admin(request)
-    service.crearMateria(admin, nombre, codigo, descripcion)
+    service.crearMateria(admin, nombre, codigo, descripcion, correlativas or None)
     return RedirectResponse(
         request.url_for("dashboard"),
         status_code=status.HTTP_303_SEE_OTHER,
@@ -288,6 +291,24 @@ async def crear_curso_view(request: Request) -> HTMLResponse:
     materias = service.listarMaterias()
     cohortes = service.listarCohortes()
     docentes = service.listarDocentes()
+    cursos = service.listarCursos()
+    materia_map = {materia.id: materia for materia in materias if materia.id}
+    cohorte_map = {cohorte.id: cohorte for cohorte in cohortes if cohorte.id}
+    docente_map = {docente.id: docente for docente in docentes if docente.id}
+    cursos_detalle = []
+    for curso in cursos:
+        materia = materia_map.get(curso.materia_id)
+        cohorte = cohorte_map.get(curso.cohorte_id)
+        docente = docente_map.get(curso.docente_id)
+        cursos_detalle.append(
+            {
+                "id": curso.id,
+                "nombre": curso.nombre,
+                "materia_nombre": materia.nombre if materia else curso.materia_id,
+                "cohorte_nombre": cohorte.nombre if cohorte else "Sin cohorte asignada",
+                "docente_nombre": docente.nombre if docente else "Sin docente asignado",
+            }
+        )
     return templates.TemplateResponse(
         "admin/crear_curso.html",
         {
@@ -295,6 +316,7 @@ async def crear_curso_view(request: Request) -> HTMLResponse:
             "materias": materias,
             "cohortes": cohortes,
             "docentes": docentes,
+            "cursos": cursos_detalle,
             "usuario": admin,
             "nav_items": menu_for_role(admin.rol),
             "page_title": "Crear curso",
@@ -320,5 +342,88 @@ async def crear_curso_action(
     )
     return RedirectResponse(
         request.url_for("dashboard"),
+        status_code=status.HTTP_303_SEE_OTHER,
+    )
+
+
+@router.get("/examenes", response_class=HTMLResponse, name="examenes_view")
+async def examenes_view(request: Request) -> HTMLResponse:
+    admin = _require_admin(request)
+    templates = request.app.state.templates
+    materias = service.listarMaterias()
+    cursos = service.listarCursos()
+    examenes = service.listarExamenes()
+    alumnos = service.listarAlumnos()
+    materia_map = {materia.id: materia for materia in materias if materia.id}
+    curso_map = {curso.id: curso for curso in cursos if curso.id}
+    examenes_detalle = []
+    for examen in examenes:
+        correlativas = [
+            materia_map[correlativa_id].nombre
+            for correlativa_id in examen.correlativas
+            if correlativa_id in materia_map
+        ]
+        alumnos_inscriptos = [
+            alumno
+            for alumno in alumnos
+            if examen.id and examen.id in alumno.examenesInscripto
+        ]
+        examenes_detalle.append(
+            {
+                "examen": examen,
+                "materia_nombre": materia_map.get(examen.materia_id).nombre
+                if materia_map.get(examen.materia_id)
+                else examen.materia_id,
+                "curso_nombre": curso_map.get(examen.curso_id).nombre
+                if examen.curso_id and curso_map.get(examen.curso_id)
+                else "Sin curso asignado",
+                "correlativas": correlativas,
+                "alumnos": alumnos_inscriptos,
+            }
+        )
+    success = request.query_params.get("success")
+    error = request.query_params.get("error")
+    return templates.TemplateResponse(
+        "admin/examenes.html",
+        {
+            "request": request,
+            "usuario": admin,
+            "nav_items": menu_for_role(admin.rol),
+            "page_title": "Gestion de examenes",
+            "materias": materias,
+            "cursos": cursos,
+            "examenes_detalle": examenes_detalle,
+            "success": success,
+            "error": error,
+        },
+    )
+
+
+@router.post("/examenes")
+async def crear_examen_action(
+    request: Request,
+    nombre: str = Form(...),
+    fecha: str = Form(...),
+    materia_id: str = Form(...),
+    curso_id: str = Form(""),
+    correlativas: List[str] = Form(default=[]),
+) -> RedirectResponse:
+    _require_admin(request)
+    url = request.url_for("examenes_view")
+    try:
+        service.crearExamen(
+            nombre=nombre,
+            materia_id=materia_id,
+            fecha=fecha,
+            curso_id=curso_id or None,
+            correlativas=correlativas or None,
+        )
+    except ValueError as exc:
+        return RedirectResponse(
+            f"{url}?error={quote(str(exc))}",
+            status_code=status.HTTP_303_SEE_OTHER,
+        )
+    return RedirectResponse(
+        f"{url}?success={quote('Examen creado correctamente')}",
         status_code=status.HTTP_303_SEE_OTHER,
     )

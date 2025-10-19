@@ -1,1 +1,16 @@
-[]
+[
+  {
+    "id": "e66dedc7-f53c-44ae-a10b-8248e4c3f5d4",
+    "nombre": "Algebra 1 - 2do Cuatri 2025",
+    "materia_id": "74dad036-5d90-4b98-af98-9b65401247db",
+    "cohorte_id": "32017e88-01f5-4fa2-9591-2620db0d4498",
+    "docente_id": "40f1affe-c7fa-4ddc-bdae-83ee4541d1c9"
+  },
+  {
+    "id": "5f7b1e73-754f-4ae1-a288-639b99e1cd9b",
+    "nombre": "algebra 2 - 2do cuatri 2025",
+    "materia_id": "7a607337-eb58-4c2b-a44e-b4ffca8caa7d",
+    "cohorte_id": "32017e88-01f5-4fa2-9591-2620db0d4498",
+    "docente_id": "40f1affe-c7fa-4ddc-bdae-83ee4541d1c9"
+  }
+]

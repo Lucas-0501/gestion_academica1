@@ -30,6 +30,25 @@
           placeholder="Resumen de contenidos, objetivos y carga horaria"
         ></textarea>
       </div>
+      {% if materias %}
+      <div class="form-group form-group--full">
+        <span><i class="fas fa-route"></i> Correlativas (opcional)</span>
+        <p class="form-hint">Selecciona las materias que el alumno debe aprobar antes de cursar esta.</p>
+        <div class="checkbox-grid">
+          {% for materia in materias %}
+          {% if materia.id %}
+          <label class="checkbox-item">
+            <input type="checkbox" name="correlativas" value="{{ materia.id }}" />
+            <span class="checkbox-item__content">
+              <strong>{{ materia.nombre }}</strong>
+              <small>{{ materia.codigo }}</small>
+            </span>
+          </label>
+          {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
     </div>
     <div class="form-actions">
       <button type="submit" class="btn btn-primary">

@@ -16,8 +16,14 @@
     "rol": "alumno",
     "sesion_activa": false,
     "type": "Alumno",
-    "materiasInscripto": [],
-    "examenesInscripto": [],
+    "materiasInscripto": [
+      "92c337ac-b1c2-49bd-88bc-56a7dea5526b",
+      "f2cea8dd-9842-4e63-ac74-144b9112e15d"
+    ],
+    "examenesInscripto": [
+      "10c415c8-8def-4521-81be-2a6f63f6391e",
+      "be0bd24f-42f5-426a-a98d-86276d6c4753"
+    ],
     "plan_id": "a37c5b2b-efe3-4873-88aa-d88e512ef569",
     "cohorte_id": "32017e88-01f5-4fa2-9591-2620db0d4498"
   },

@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+{% block title %}Gestion de examenes{% endblock %}
+{% block content %}
+<section class="card form-card">
+  <header class="card__header">
+    <div class="card__icon">
+      <i class="fas fa-file-circle-plus"></i>
+    </div>
+    <div>
+      <h2>Crear examen</h2>
+      <p>Define la materia, curso, correlativas y fecha para habilitar la inscripción.</p>
+    </div>
+  </header>
+  <form method="post" action="{{ request.url.path }}" class="form" data-loading="true">
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="nombre"><i class="fas fa-pen"></i> Nombre del examen</label>
+        <input id="nombre" type="text" name="nombre" placeholder="Ej. Parcial 1 de Algoritmos" required />
+      </div>
+      <div class="form-group">
+        <label for="fecha"><i class="fas fa-calendar-day"></i> Fecha</label>
+        <input id="fecha" type="date" name="fecha" required />
+      </div>
+      <div class="form-group">
+        <label for="materia_id"><i class="fas fa-book"></i> Materia</label>
+        <select id="materia_id" name="materia_id" required>
+          <option value="">Seleccionar materia...</option>
+          {% for materia in materias %}
+          {% if materia.id %}
+          <option value="{{ materia.id }}">{{ materia.nombre }} ({{ materia.codigo }})</option>
+          {% endif %}
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="curso_id"><i class="fas fa-chalkboard"></i> Curso (opcional)</label>
+        <select id="curso_id" name="curso_id">
+          <option value="">Sin curso asociado</option>
+          {% for curso in cursos %}
+          {% if curso.id %}
+          <option value="{{ curso.id }}" data-materia="{{ curso.materia_id }}">{{ curso.nombre }}</option>
+          {% endif %}
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group form-group--full">
+        <span><i class="fas fa-route"></i> Correlativas (opcional)</span>
+        <p class="form-hint">Selecciona las materias que el alumno debe aprobar antes de rendir.</p>
+        <div class="checkbox-grid">
+          {% for materia in materias %}
+          {% if materia.id %}
+          <label class="checkbox-item">
+            <input type="checkbox" name="correlativas" value="{{ materia.id }}" />
+            <span class="checkbox-item__content">
+              <strong>{{ materia.nombre }}</strong>
+              <small>{{ materia.codigo }}</small>
+            </span>
+          </label>
+          {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">
+        <i class="fas fa-floppy-disk"></i>
+        Guardar examen
+      </button>
+    </div>
+  </form>
+</section>
+<section class="card info-card">
+  <h3>Examenes registrados</h3>
+  {% if examenes_detalle %}
+  <div class="info-card__body">
+    {% for detalle in examenes_detalle %}
+    <details class="exam-accordion">
+      <summary>
+        <span class="exam-accordion__title">{{ detalle.examen.nombre }}</span>
+        <span class="exam-accordion__meta">
+          {{ detalle.materia_nombre }} &bull; {{ detalle.examen.fecha }}
+        </span>
+      </summary>
+      <div class="exam-detail">
+        <p><strong>Materia:</strong> {{ detalle.materia_nombre }}</p>
+        <p><strong>Curso asociado:</strong> {{ detalle.curso_nombre }}</p>
+        <p>
+          <strong>Correlativas:</strong>
+          {% if detalle.correlativas %}
+            {{ detalle.correlativas | join(", ") }}
+          {% else %}
+            Sin correlativas definidas
+          {% endif %}
+        </p>
+        <div>
+          <strong>Alumnos inscriptos:</strong>
+          {% if detalle.alumnos %}
+          <ul class="list-inline">
+            {% for alumno in detalle.alumnos %}
+            <li>{{ alumno.nombre }} <small>({{ alumno.email }})</small></li>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <p class="empty-state">No hay alumnos inscriptos en este examen.</p>
+          {% endif %}
+        </div>
+      </div>
+    </details>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="empty-state">Todavia no se cargaron examenes.</p>
+  {% endif %}
+</section>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const cursoSelect = document.getElementById("curso_id");
+    const materiaSelect = document.getElementById("materia_id");
+    if (cursoSelect && materiaSelect) {
+      cursoSelect.addEventListener("change", () => {
+        const selectedOption = cursoSelect.options[cursoSelect.selectedIndex];
+        if (!selectedOption) {
+          return;
+        }
+        const materiaId = selectedOption.getAttribute("data-materia");
+        if (materiaId) {
+          materiaSelect.value = materiaId;
+        }
+      });
+    }
+  });
+</script>
+{% endblock %}

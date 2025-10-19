@@ -15,7 +15,13 @@ class Administrador(Usuario):
 
         return Plan(id=None, nombre=nombre, descripcion=descripcion, materias=[])
 
-    def crearMateria(self, nombre: str, codigo: str, descripcion: str) -> "Materia":
+    def crearMateria(
+        self,
+        nombre: str,
+        codigo: str,
+        descripcion: str,
+        correlativas: Optional[List[str]] = None,
+    ) -> "Materia":
         from ..materia import Materia
 
         return Materia(
@@ -23,6 +29,7 @@ class Administrador(Usuario):
             nombre=nombre,
             codigo=codigo,
             descripcion=descripcion,
+            correlativas=list(correlativas or []),
         )
 
     def crearCohorte(

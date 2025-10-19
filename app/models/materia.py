@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
-from typing import Dict, Optional
+from dataclasses import dataclass, field
+from typing import Dict, List, Optional
 
 
 @dataclass
@@ -12,6 +12,7 @@ class Materia:
     nombre: str
     codigo: str
     descripcion: str
+    correlativas: List[str] = field(default_factory=list)
 
     def to_dict(self) -> Dict[str, object]:
         return {
@@ -19,6 +20,7 @@ class Materia:
             "nombre": self.nombre,
             "codigo": self.codigo,
             "descripcion": self.descripcion,
+            "correlativas": list(self.correlativas),
         }
 
     @classmethod
@@ -28,4 +30,5 @@ class Materia:
             nombre=data["nombre"],  # type: ignore[index]
             codigo=data["codigo"],  # type: ignore[index]
             descripcion=data.get("descripcion", ""),  # type: ignore[arg-type]
+            correlativas=list(data.get("correlativas", [])),  # type: ignore[arg-type]
         )

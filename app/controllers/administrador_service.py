@@ -8,6 +8,7 @@ from app.models.USRs import Administrador, Alumno, Docente
 from app.models.cohorte import Cohorte
 from app.models.curso import Curso
 from app.models.dbbroker import DBBroker
+from app.models.examen import Examen
 from app.models.materia import Materia
 from app.models.plan import Plan
 
@@ -16,8 +17,16 @@ class AdministradorService:
     def __init__(self, broker: Optional[DBBroker] = None) -> None:
         self.broker = broker or DBBroker()
 
-    def crearMateria(self, admin: Administrador, nombre: str, codigo: str, descripcion: str) -> Materia:
-        materia = admin.crearMateria(nombre, codigo, descripcion)
+    def crearMateria(
+        self,
+        admin: Administrador,
+        nombre: str,
+        codigo: str,
+        descripcion: str,
+        correlativas: Optional[List[str]] = None,
+    ) -> Materia:
+        correlativas_limpias = [value for value in (correlativas or []) if value]
+        materia = admin.crearMateria(nombre, codigo, descripcion, correlativas_limpias)
         self.broker.guardarObjeto(materia)
         return materia
 
@@ -138,6 +147,32 @@ class AdministradorService:
 
     def listarCohortes(self) -> List[Cohorte]:
         return [Cohorte.from_dict(item) for item in self.broker.listar("Cohorte")]
+
+    def listarCursos(self) -> List[Curso]:
+        return [Curso.from_dict(item) for item in self.broker.listar("Curso")]
+
+    def crearExamen(
+        self,
+        nombre: str,
+        materia_id: str,
+        fecha: str,
+        curso_id: Optional[str] = None,
+        correlativas: Optional[List[str]] = None,
+    ) -> Examen:
+        correlativas_limpias = [value for value in (correlativas or []) if value]
+        examen = Examen(
+            id=None,
+            nombre=nombre,
+            materia_id=materia_id,
+            fecha=fecha,
+            curso_id=curso_id or None,
+            correlativas=correlativas_limpias,
+        )
+        self.broker.guardarObjeto(examen)
+        return examen
+
+    def listarExamenes(self) -> List[Examen]:
+        return [Examen.from_dict(item) for item in self.broker.listar("Examen")]
 
     def listarDocentes(self) -> List[Docente]:
         usuarios = self.broker.listar("Usuario")

@@ -4,5 +4,16 @@
     "materia_id": "92c337ac-b1c2-49bd-88bc-56a7dea5526b",
     "fecha": "2024-07-01",
     "cupo": null
+  },
+  {
+    "id": "be0bd24f-42f5-426a-a98d-86276d6c4753",
+    "nombre": "Final Bases de datos I",
+    "materia_id": "b420f1c2-1f0e-4606-808e-edf9df54aa35",
+    "fecha": "2025-11-26",
+    "curso_id": null,
+    "correlativas": [
+      "fff309e1-2bd3-4c62-9db1-3e243defbc1e"
+    ],
+    "cupo": null
   }
 ]

@@ -53,4 +53,68 @@
     </div>
   </form>
 </section>
+<section class="card info-card">
+  <header class="card__header">
+    <div class="card__icon">
+      <i class="fas fa-magnifying-glass"></i>
+    </div>
+    <div>
+      <h2>Buscar cursos existentes</h2>
+      <p>Consulta los datos de los cursos que ya fueron creados.</p>
+    </div>
+  </header>
+  {% if cursos %}
+  <div class="form-group form-group--full">
+    <input
+      id="courseSearch"
+      type="search"
+      class="student-picker__search"
+      placeholder="Filtrar por nombre de curso, materia, cohorte o docente"
+    />
+  </div>
+  <div class="info-card__body" id="courseList">
+    {% for curso in cursos %}
+    <article
+      class="course-card exam-detail"
+      data-course-name="{{ curso.nombre | lower }}"
+      data-course-materia="{{ curso.materia_nombre | lower }}"
+      data-course-cohorte="{{ curso.cohorte_nombre | lower }}"
+      data-course-docente="{{ curso.docente_nombre | lower }}"
+    >
+      <h4>{{ curso.nombre }}</h4>
+      <p><strong>Materia:</strong> {{ curso.materia_nombre }}</p>
+      <p><strong>Cohorte:</strong> {{ curso.cohorte_nombre }}</p>
+      <p><strong>Docente:</strong> {{ curso.docente_nombre }}</p>
+    </article>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="empty-state">Todavia no se registraron cursos.</p>
+  {% endif %}
+</section>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const courseSearch = document.getElementById("courseSearch");
+    if (!courseSearch) {
+      return;
+    }
+    courseSearch.addEventListener("input", (event) => {
+      const term = ((event.target && event.target.value) || "").toLowerCase();
+      document.querySelectorAll(".course-card").forEach((card) => {
+        const name = (card.dataset.courseName || "").toLowerCase();
+        const materia = (card.dataset.courseMateria || "").toLowerCase();
+        const cohorte = (card.dataset.courseCohorte || "").toLowerCase();
+        const docente = (card.dataset.courseDocente || "").toLowerCase();
+        const matches = [name, materia, cohorte, docente].some((value) =>
+          value.includes(term)
+        );
+        card.style.display = matches ? "" : "none";
+      });
+    });
+  });
+</script>
 {% endblock %}

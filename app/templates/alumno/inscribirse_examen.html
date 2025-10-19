@@ -17,9 +17,9 @@
         <label for="examen_id"><i class="fas fa-calendar"></i> Examen disponible</label>
         <select id="examen_id" name="examen_id" required>
           <option value="">Elegir examen...</option>
-          {% for examen in examenes %}
-          <option value="{{ examen.id }}">
-            {{ materias.get(examen.materia_id, examen.materia_id) }} - {{ examen.fecha }}
+          {% for detalle in examenes_detalle %}
+          <option value="{{ detalle.examen.id }}">
+            {{ detalle.examen.nombre }} - {{ detalle.materia_nombre }} - {{ detalle.examen.fecha }}
           </option>
           {% endfor %}
         </select>
@@ -32,5 +32,61 @@
       </button>
     </div>
   </form>
+</section>
+{% if examenes_detalle %}
+<section class="card info-card">
+  <h3>Detalle de examenes disponibles</h3>
+  <div class="info-card__body">
+    {% for detalle in examenes_detalle %}
+    <details class="exam-accordion">
+      <summary>
+        <span class="exam-accordion__title">{{ detalle.examen.nombre }}</span>
+        <span class="exam-accordion__meta">{{ detalle.materia_nombre }} - {{ detalle.examen.fecha }}</span>
+      </summary>
+      <div class="exam-detail">
+        <p><strong>Materia:</strong> {{ detalle.materia_nombre }}</p>
+        {% if detalle.curso_nombre %}
+        <p><strong>Curso:</strong> {{ detalle.curso_nombre }}</p>
+        {% endif %}
+        <p><strong>Fecha:</strong> {{ detalle.examen.fecha }}</p>
+        <p>
+          <strong>Correlativas:</strong>
+          {% if detalle.correlativas %}
+            {{ detalle.correlativas | join(", ") }}
+          {% else %}
+            Sin correlativas obligatorias
+          {% endif %}
+        </p>
+      </div>
+    </details>
+    {% endfor %}
+  </div>
+</section>
+{% else %}
+<p class="empty-state">No hay examenes disponibles en este momento.</p>
+{% endif %}
+<section class="card info-card">
+  <h3>Mis examenes</h3>
+  {% if examenes_inscriptos %}
+  <div class="info-card__body">
+    {% for detalle in examenes_inscriptos %}
+    <article class="exam-detail">
+      <h4>{{ detalle.examen.nombre }}</h4>
+      <p><strong>Materia:</strong> {{ detalle.materia_nombre }}</p>
+      {% if detalle.curso_nombre %}
+      <p><strong>Curso:</strong> {{ detalle.curso_nombre }}</p>
+      {% endif %}
+      <p><strong>Fecha:</strong> {{ detalle.examen.fecha }}</p>
+      {% if detalle.es_pasado %}
+      <p><strong>Estado:</strong> Ya paso este examen.</p>
+      {% else %}
+      <p><strong>Estado:</strong> Pendiente de rendir.</p>
+      {% endif %}
+    </article>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="empty-state">Todavia no te inscribiste a ningun examen.</p>
+  {% endif %}
 </section>
 {% endblock %}

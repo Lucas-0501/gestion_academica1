@@ -1,4 +1,4 @@
-"""Endpoints de autenticación y panel compartido."""
+"""Endpoints de autenticacion y panel compartido."""
 
 from __future__ import annotations
 
@@ -8,7 +8,11 @@ from fastapi import APIRouter, Form, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 from starlette import status
 
+from app.controllers.alumno_service import AlumnoService
 from app.controllers.auth_service import AuthService
+from app.models.USRs import Alumno
+from app.models.cohorte import Cohorte
+from app.models.dbbroker import DBBroker
 from app.utils.auth import get_current_user, login_user, logout_user
 from app.utils.navigation import menu_for_role
 
@@ -65,6 +69,16 @@ async def logout_action(request: Request) -> RedirectResponse:
 async def dashboard(request: Request) -> HTMLResponse:
     usuario = get_current_user(request)
     templates = request.app.state.templates
+    plan_actual = None
+    cohorte_actual = None
+    if isinstance(usuario, Alumno):
+        alumno_service = AlumnoService()
+        plan_actual = alumno_service.obtenerPlanDelAlumno(usuario)
+        if usuario.cohorte_id:
+            broker = DBBroker()
+            cohorte_data = broker.obtenerPorId("Cohorte", usuario.cohorte_id)
+            if cohorte_data:
+                cohorte_actual = Cohorte.from_dict(cohorte_data)
     return templates.TemplateResponse(
         "dashboard.html",
         {
@@ -73,5 +87,7 @@ async def dashboard(request: Request) -> HTMLResponse:
             "nav_items": menu_for_role(usuario.rol),
             "page_title": "Panel principal",
             "subtitle": "Acciones rapidas para tu rol",
+            "plan_actual": plan_actual,
+            "cohorte_actual": cohorte_actual,
         },
     )

@@ -40,5 +40,14 @@
     "nombre": "algebra 2",
     "codigo": "ALG02",
     "descripcion": "asd"
+  },
+  {
+    "id": "f2cea8dd-9842-4e63-ac74-144b9112e15d",
+    "nombre": "Algoritmos 2 ",
+    "codigo": "ALG201",
+    "descripcion": "",
+    "correlativas": [
+      "92c337ac-b1c2-49bd-88bc-56a7dea5526b"
+    ]
   }
 ]

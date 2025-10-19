@@ -923,6 +923,94 @@ a {
   animation: spin 0.9s linear infinite;
 }
 
+.form-hint {
+  margin: 0.25rem 0 0.5rem;
+  color: var(--color-muted);
+  font-size: 0.85rem;
+}
+
+.assignment-card {
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+}
+
+.assignment-card__list {
+  margin: 0;
+  padding-left: 1.25rem;
+  color: var(--color-text);
+}
+
+.assignment-card__list li {
+  margin-bottom: 0.5rem;
+}
+
+.info-card__body {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.exam-accordion {
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+  padding: 0.75rem 1rem;
+}
+
+.exam-accordion + .exam-accordion {
+  margin-top: 0.75rem;
+}
+
+.exam-accordion summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  cursor: pointer;
+  font-weight: 600;
+  list-style: none;
+}
+
+.exam-accordion summary::-webkit-details-marker {
+  display: none;
+}
+
+.exam-accordion__title {
+  font-weight: 600;
+}
+
+.exam-accordion__meta {
+  font-size: 0.85rem;
+  color: var(--color-muted);
+}
+
+.list-inline {
+  margin: 0.5rem 0 0.75rem;
+  padding-left: 1.25rem;
+  color: var(--color-text);
+}
+
+.list-inline li {
+  margin-bottom: 0.25rem;
+}
+
+.exam-detail {
+  padding: 1rem;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.exam-detail h4 {
+  margin: 0 0 0.5rem;
+}
+
+.exam-detail p {
+  margin: 0.25rem 0;
+}
+
 .fade-in {
   animation: fadeIn 0.45s ease;
 }
