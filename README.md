@@ -216,6 +216,8 @@ requirements.txt          # Dependencias del entorno.
    ```
 4. Acceder a `http://127.0.0.1:8000/` para utilizar el sistema con las credenciales semilla (`admin@demo.com`, `alumno1@demo.com`, `docente1@demo.com`, password `1234`).
 
+> Para despliegues en Render se fija la version `python-3.12.4` mediante `runtime.txt`, evitando compilar dependencias que todavia no ofrecen wheels para Python 3.13.
+
 ## Conclusiones de diseno
 
 El sistema preserva el bajo acoplamiento y la alta cohesion previstos en el diseno original: los routers manejan la capa HTTP, los servicios agrupan reglas por caso de uso, los modelos encapsulan atributos y comportamientos y el broker abstrae el detalle de persistencia. La trazabilidad entre casos de uso, diagramas de clases y secuencias se refleja en los archivos listados, demostrando que la implementacion final respeta las decisiones de la fase de analisis y diseno.

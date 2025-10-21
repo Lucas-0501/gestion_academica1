@@ -5,5 +5,5 @@ python-multipart==0.0.9
 itsdangerous==2.2.0
 starlette==0.37.2
 aiofiles==23.2.1
-pydantic==2.7.1
+pydantic==1.10.13
 email-validator==2.2.0
