@@ -6,5 +6,4 @@ itsdangerous==2.2.0
 starlette==0.37.2
 aiofiles==23.2.1
 pydantic==2.7.1
-watchfiles==0.21.0
 email-validator==2.2.0
