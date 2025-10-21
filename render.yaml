@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: gestion-academica
+    runtime: python
+    pythonVersion: 3.13.4
+    buildCommand: >
+      rm -rf .venv
+      && python -m venv .venv
+      && .venv/bin/pip install --upgrade pip
+      && .venv/bin/pip install -r requirements.txt
+    startCommand: ./start.sh

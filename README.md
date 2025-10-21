@@ -216,6 +216,16 @@ requirements.txt          # Dependencias del entorno.
    ```
 4. Acceder a `http://127.0.0.1:8000/` para utilizar el sistema con las credenciales semilla (`admin@demo.com`, `alumno1@demo.com`, `docente1@demo.com`, password `1234`).
 
+### Deploy en Render
+
+- El repositorio incluye `render.yaml` indicando `pythonVersion: 3.13.4`, `buildCommand` con recreacion de entorno virtual limpia y `startCommand: ./start.sh`.
+- En el dashboard de Render crea un servicio Web basado en este repo y deja activada la opcion *Auto-Deploy* para reutilizar esa configuracion automaticamente.
+
+### Deploy en Railway
+
+- El archivo `nixpacks.toml` solicita la imagen `python313Full`, instala dependencias con `pip` y usa el mismo comando de inicio (`uvicorn app.main:app --host 0.0.0.0 --port $PORT`).
+- En Railway dejá el builder por defecto (Nixpacks); al detectar el archivo, ejecutara los pasos anteriores sin configuracion adicional.
+
 ## Conclusiones de diseno
 
 El sistema preserva el bajo acoplamiento y la alta cohesion previstos en el diseno original: los routers manejan la capa HTTP, los servicios agrupan reglas por caso de uso, los modelos encapsulan atributos y comportamientos y el broker abstrae el detalle de persistencia. La trazabilidad entre casos de uso, diagramas de clases y secuencias se refleja en los archivos listados, demostrando que la implementacion final respeta las decisiones de la fase de analisis y diseno.
