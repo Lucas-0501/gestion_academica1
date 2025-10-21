@@ -39,6 +39,63 @@ El sistema de gestión académica, ofrece autenticacion diferenciada por rol (ad
 5. **Presentacion (`app/templates/`, `app/static/`)**: Jinja2 entrega paginas HTML e incluye componentes reutilizables; CSS define la experiencia visual.
 6. **Datos (`data/`)**: archivos JSON versionables que actuan como almacenamiento permanente para usuarios, materias, planes, cohortes, cursos, examenes, asistencias y calificaciones.
 
+## Mapa de navegacion (UML)
+
+El siguiente state diagram en Mermaid resume el flujo principal de pantallas segun el rol autenticado y los accesos disponibles desde el panel correspondiente.
+
+```mermaid
+stateDiagram-v2
+    [*] --> Login
+    Login --> DashboardAdmin: rol=administrador
+    Login --> DashboardAlumno: rol=alumno
+    Login --> DashboardDocente: rol=docente
+    Login --> Login: error credenciales
+
+    state DashboardAdmin {
+        [*] --> PanelAdmin
+        PanelAdmin --> RegistrarUsuario
+        PanelAdmin --> CrearMateria
+        PanelAdmin --> CrearPlan
+        PanelAdmin --> CrearCohorte
+        PanelAdmin --> CrearCurso
+        PanelAdmin --> GestionExamenes
+
+        RegistrarUsuario --> PanelAdmin
+        CrearMateria --> PanelAdmin
+        CrearPlan --> PanelAdmin
+        CrearCohorte --> PanelAdmin
+        CrearCurso --> PanelAdmin
+        GestionExamenes --> PanelAdmin
+        GestionExamenes --> CrearMateria: alta correlativas
+    }
+
+    state DashboardAlumno {
+        [*] --> PanelAlumno
+        PanelAlumno --> InscripcionMateria
+        PanelAlumno --> InscripcionExamen
+        PanelAlumno --> AsistenciaAlumno
+        PanelAlumno --> NotasAlumno
+
+        InscripcionMateria --> PanelAlumno
+        InscripcionExamen --> PanelAlumno
+        AsistenciaAlumno --> PanelAlumno
+        NotasAlumno --> PanelAlumno
+    }
+
+    state DashboardDocente {
+        [*] --> PanelDocente
+        PanelDocente --> AsistenciaDocente
+        PanelDocente --> CargarCalificaciones
+
+        AsistenciaDocente --> PanelDocente
+        CargarCalificaciones --> PanelDocente
+    }
+
+    DashboardAdmin --> Login: logout
+    DashboardAlumno --> Login: logout
+    DashboardDocente --> Login: logout
+```
+
 ### Estructura de carpetas relevante
 
 ```

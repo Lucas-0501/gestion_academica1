@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import List
 
@@ -19,11 +20,16 @@ from app.router import admin_router, alumno_router, auth_router, docente_router
 
 
 def create_app() -> FastAPI:
-    app = FastAPI(title="Sistema de Gestion Academica")
     base_dir = Path(__file__).resolve().parent
     static_dir = base_dir / "static"
     templates = Jinja2Templates(directory=str(base_dir / "templates"))
 
+    @asynccontextmanager
+    async def lifespan(app: FastAPI):
+        seed_data()
+        yield
+
+    app = FastAPI(title="Sistema de Gestion Academica", lifespan=lifespan)
     app.mount("/static", StaticFiles(directory=str(static_dir)), name="static")
 
     app.include_router(auth_router.router)
@@ -33,10 +39,6 @@ def create_app() -> FastAPI:
 
     app.add_middleware(SessionMiddleware, secret_key="super-secret-key")
     app.state.templates = templates
-
-    @app.on_event("startup")
-    async def startup() -> None:
-        seed_data()
 
     return app
 
