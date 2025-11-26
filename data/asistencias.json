@@ -26,5 +26,19 @@
     "fecha": "2025-11-19",
     "presente": true,
     "rol": "alumno"
+  },
+  {
+    "id": "529f3a2b-9df5-4d4d-b843-89b6efe89425",
+    "usuario_id": "5802d6c8-5394-4ca7-8e37-ac3935bc8300",
+    "fecha": "2025-11-25",
+    "presente": true,
+    "rol": "alumno"
+  },
+  {
+    "id": "0c401e39-d558-4060-bced-355c8ada4fea",
+    "usuario_id": "40f1affe-c7fa-4ddc-bdae-83ee4541d1c9",
+    "fecha": "2025-11-25",
+    "presente": true,
+    "rol": "docente"
   }
 ]

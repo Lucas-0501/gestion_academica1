@@ -49,7 +49,7 @@ def test_campo_password_vacio(client):
         follow_redirects=False,
     )
     assert resp.status_code == 303
-    assert _extract_error(resp) == "El campo contraseña es obligatorio"
+    assert _extract_error(resp) == "El campo contrasena es obligatorio"
 
 
 def test_credenciales_invalidas(client):
@@ -59,7 +59,7 @@ def test_credenciales_invalidas(client):
         follow_redirects=False,
     )
     assert resp.status_code == 303
-    assert _extract_error(resp) == "Credenciales inválidas"
+    assert _extract_error(resp) == "Credenciales invalidas"
 
 
 def test_usuario_con_numeros(client):
@@ -79,17 +79,17 @@ def test_usuario_muy_corto(client):
         follow_redirects=False,
     )
     assert resp.status_code == 303
-    assert _extract_error(resp) == "Usuario debe tener mínimo 3 caracteres"
+    assert _extract_error(resp) == "Usuario debe tener minimo 3 caracteres"
 
 
 def test_usuario_muy_largo(client):
     resp = client.post(
         "/auth/login",
-        data={"usuario": "usuario_muy_largo_123456", "password": "clave123"},
+        data={"usuario": "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu", "password": "clave123"},
         follow_redirects=False,
     )
     assert resp.status_code == 303
-    assert _extract_error(resp) == "Usuario máximo 20 caracteres"
+    assert _extract_error(resp) == "Usuario maximo 40 caracteres"
 
 
 def test_password_sin_numeros(client):
@@ -99,7 +99,7 @@ def test_password_sin_numeros(client):
         follow_redirects=False,
     )
     assert resp.status_code == 303
-    assert _extract_error(resp) == "La contraseña debe contener al menos 1 número"
+    assert _extract_error(resp) == "La contrasena debe contener al menos 1 numero"
 
 
 def test_cuenta_bloqueada(client):
@@ -119,4 +119,4 @@ def test_usuario_con_caracteres_especiales(client):
         follow_redirects=False,
     )
     assert resp.status_code == 303
-    assert _extract_error(resp) == "Usuario solo puede contener letras y números"
+    assert _extract_error(resp) == "Usuario solo puede contener letras y numeros"

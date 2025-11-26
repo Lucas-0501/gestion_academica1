@@ -8,26 +8,36 @@
     </div>
     <div>
       <h2>Registrar calificacion</h2>
-      <p>Selecciona alumno, materia y asigna la nota correspondiente.</p>
+      <p>Selecciona examen y alumno, e ingresa la nota correspondiente.</p>
     </div>
   </header>
+  {% if success %}
+  <div class="banner banner--success">
+    {{ success }}
+  </div>
+  {% endif %}
+  {% if error %}
+  <div class="banner banner--error">
+    {{ error }}
+  </div>
+  {% endif %}
   <form method="post" action="{{ request.url.path }}" class="form" data-loading="true">
     <div class="form-grid">
+      <div class="form-group">
+        <label for="examen_id"><i class="fas fa-file-signature"></i> Examen</label>
+        <select id="examen_id" name="examen_id" required>
+          <option value="">Elegir examen...</option>
+          {% for examen in examenes %}
+          <option value="{{ examen.id }}">{{ examen.nombre }} - {{ examen.materia_id }}</option>
+          {% endfor %}
+        </select>
+      </div>
       <div class="form-group">
         <label for="alumno_id"><i class="fas fa-user-graduate"></i> Alumno</label>
         <select id="alumno_id" name="alumno_id" required>
           <option value="">Elegir alumno...</option>
           {% for alumno in alumnos %}
           <option value="{{ alumno.id }}">{{ alumno.nombre }} - {{ alumno.email }}</option>
-          {% endfor %}
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="materia_id"><i class="fas fa-book"></i> Materia</label>
-        <select id="materia_id" name="materia_id" required>
-          <option value="">Elegir materia...</option>
-          {% for materia in materias %}
-          <option value="{{ materia.id }}">{{ materia.nombre }}</option>
           {% endfor %}
         </select>
       </div>

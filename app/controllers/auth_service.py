@@ -1,4 +1,4 @@
-"""Servicio de aplicación para los flujos de autenticación."""
+"""Servicio de aplicaciÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n para los flujos de autenticaciÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³n."""
 
 from __future__ import annotations
 
@@ -23,8 +23,8 @@ class AuthService:
                 if rol and data.get("rol") != rol:
                     continue
                 return self._build_usuario(data)
-            raise ValueError("Credenciales inválidas")
-        raise ValueError("Credenciales inválidas")
+            raise ValueError("Credenciales invalidas")
+        raise ValueError("Credenciales invalidas")
 
     def _match_usuario(self, data: Dict[str, object], usuario: str) -> bool:
         return data.get("email") == usuario or data.get("username") == usuario

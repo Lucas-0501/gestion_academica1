@@ -5,5 +5,26 @@
     "materia_id": "b420f1c2-1f0e-4606-808e-edf9df54aa35",
     "nota": 10.0,
     "fecha": "2025-10-12"
+  },
+  {
+    "id": "b660cc89-359c-41fd-b51c-91b23305e091",
+    "alumno_id": "1a69749e-8c73-4376-8216-f5e419e1c70b",
+    "materia_id": "b420f1c2-1f0e-4606-808e-edf9df54aa35",
+    "nota": 10.0,
+    "fecha": "2025-11-25"
+  },
+  {
+    "id": "01c4e1e0-0f83-49e4-8547-cfdeb1d60e0f",
+    "alumno_id": "1a69749e-8c73-4376-8216-f5e419e1c70b",
+    "materia_id": "4e5f6a7b-a3b4-4cfd-904b-5c6d7e8f9011",
+    "nota": 10.0,
+    "fecha": "2025-11-25"
+  },
+  {
+    "id": "00e373d5-7722-479b-a52c-2684ccf4675d",
+    "alumno_id": "5802d6c8-5394-4ca7-8e37-ac3935bc8300",
+    "materia_id": "b420f1c2-1f0e-4606-808e-edf9df54aa35",
+    "nota": 8.0,
+    "fecha": "2025-11-25"
   }
 ]

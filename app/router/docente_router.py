@@ -16,9 +16,6 @@ from app.utils.auth import get_current_user
 from app.utils.navigation import menu_for_role
 
 router = APIRouter(prefix="/docente", tags=["Docente"])
-service = DocenteService()
-asistencia_service = AsistenciaService()
-admin_service = AdministradorService()
 
 
 def _require_docente(request: Request):
@@ -33,6 +30,7 @@ async def asistencia_view(request: Request) -> HTMLResponse:
     docente = _require_docente(request)
     templates = request.app.state.templates
     mes = request.query_params.get("mes")
+    asistencia_service = AsistenciaService()
     asistencia = asistencia_service.consultarAsistencia(docente.id, docente.rol, mes)  # type: ignore[arg-type]
     success = request.query_params.get("success")
     error = request.query_params.get("error")
@@ -63,6 +61,7 @@ async def asistencia_action(
     docente = _require_docente(request)
     mes_actual = mes or date.today().strftime("%Y-%m")
     url = request.url_for("docente_asistencia_view")
+    asistencia_service = AsistenciaService()
     try:
         asistencia_service.registrarAsistencia(
             docente.id,  # type: ignore[arg-type]
@@ -83,11 +82,14 @@ async def asistencia_action(
 @router.get("/cargar_calificaciones", response_class=HTMLResponse)
 async def cargar_calificaciones_view(request: Request) -> HTMLResponse:
     docente = _require_docente(request)
+    service = DocenteService()
+    admin_service = AdministradorService()
     templates = request.app.state.templates
-    materias = service.listarMateriasAsignadas(docente)
-    if not materias:
-        materias = admin_service.listarMaterias()
+    materias = service.listarMateriasAsignadas(docente) or admin_service.listarMaterias()
     alumnos = admin_service.listarAlumnos()
+    examenes = admin_service.listarExamenes()
+    success = request.query_params.get("success")
+    error = request.query_params.get("error")
     return templates.TemplateResponse(
         "docente/cargar_calificaciones.html",
         {
@@ -95,6 +97,9 @@ async def cargar_calificaciones_view(request: Request) -> HTMLResponse:
             "usuario": docente,
             "materias": materias,
             "alumnos": alumnos,
+            "examenes": examenes,
+            "success": success,
+            "error": error,
             "nav_items": menu_for_role(docente.rol),
             "page_title": "Cargar calificaciones",
         },
@@ -105,12 +110,22 @@ async def cargar_calificaciones_view(request: Request) -> HTMLResponse:
 async def cargar_calificaciones_action(
     request: Request,
     alumno_id: str = Form(...),
-    materia_id: str = Form(...),
+    examen_id: str = Form(...),
     nota: float = Form(...),
 ) -> RedirectResponse:
     docente = _require_docente(request)
+    service = DocenteService()
+    admin_service = AdministradorService()
+    url = request.url_for("cargar_calificaciones_view")
+    examen_data = admin_service.broker.obtenerPorId("Examen", examen_id)
+    if not examen_data:
+        return RedirectResponse(
+            f"{url}?error={quote('Examen no encontrado')}",
+            status_code=status.HTTP_303_SEE_OTHER,
+        )
+    materia_id = examen_data.get("materia_id")
     service.cargarCalificaciones(docente, alumno_id, materia_id, nota)
     return RedirectResponse(
-        request.url_for("dashboard"),
+        f"{url}?success={quote('Calificación guardada')}",
         status_code=status.HTTP_303_SEE_OTHER,
     )
