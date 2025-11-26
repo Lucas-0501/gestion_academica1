@@ -35,8 +35,8 @@ def _validar_usuario(usuario: str) -> str | None:
         return "El campo usuario es obligatorio"
     if len(usuario) < 3:
         return "Usuario debe tener mínimo 3 caracteres"
-    if len(usuario) > 20:
-        return "Usuario máximo 20 caracteres"
+    if len(usuario) > 40:
+        return "Usuario máximo 40 caracteres"
     if not _USUARIO_REGEX.match(usuario):
         return "Usuario solo puede contener letras y números"
     return None
