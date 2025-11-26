@@ -122,5 +122,33 @@
     "examenesInscripto": [],
     "plan_id": null,
     "cohorte_id": null
+  },
+  {
+    "id": "d88ead4a-2065-4ea1-b3e0-2a9d3405ef49",
+    "nombre": "Juan Perez",
+    "email": "juan@mail.com",
+    "password": "1234",
+    "rol": "alumno",
+    "sesion_activa": false,
+    "bloqueado": false,
+    "type": "Alumno",
+    "materiasInscripto": [],
+    "examenesInscripto": [],
+    "plan_id": null,
+    "cohorte_id": null
+  },
+  {
+    "id": "83ce5ab2-fb4e-4a2a-ae8d-1be10977d69b",
+    "nombre": "Lucas aguero",
+    "email": "aguero.lucas@comunidad.ub.edu.ar",
+    "password": "1234",
+    "rol": "alumno",
+    "sesion_activa": false,
+    "bloqueado": false,
+    "type": "Alumno",
+    "materiasInscripto": [],
+    "examenesInscripto": [],
+    "plan_id": null,
+    "cohorte_id": null
   }
 ]

@@ -11,6 +11,16 @@
       <p>Completa la informacion base para habilitar el acceso.</p>
     </div>
   </header>
+  {% if success %}
+  <div class="banner banner--success">
+    {{ success }}
+  </div>
+  {% endif %}
+  {% if error %}
+  <div class="banner banner--error">
+    {{ error }}
+  </div>
+  {% endif %}
   <form method="post" action="{{ request.url.path }}" class="form" data-loading="true">
     <div class="form-grid">
       <div class="form-group">

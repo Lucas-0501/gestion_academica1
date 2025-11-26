@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import List, Optional
 from urllib.parse import quote
 
+from email_validator import EmailNotValidError, validate_email
 from fastapi import APIRouter, Form, HTTPException, Request, status
 from fastapi.responses import HTMLResponse, RedirectResponse
 
@@ -13,7 +14,6 @@ from app.utils.auth import get_current_user
 from app.utils.navigation import menu_for_role
 
 router = APIRouter(prefix="/admin", tags=["Administrador"])
-service = AdministradorService()
 
 
 def _require_admin(request: Request):
@@ -23,10 +23,48 @@ def _require_admin(request: Request):
     return usuario
 
 
+def _validar_nombre_plan(nombre: str, planes_existentes: List) -> str | None:
+    nombre_limpio = (nombre or "").strip()
+    if not nombre_limpio:
+        return "Debe ingresar nombre"
+    if len(nombre_limpio) > 50:
+        return "Nombre máximo 50 caracteres"
+    if not all(char.isalnum() or char.isspace() for char in nombre_limpio):
+        return "El nombre no admite caracteres especiales"
+    existentes = {plan.nombre.lower() for plan in planes_existentes}
+    if nombre_limpio.lower() in existentes:
+        return "Plan ya registrado"
+    return None
+
+
+def _validar_registro_usuario(nombre: str, email: str, rol: str, broker) -> str | None:
+    nombre_limpio = (nombre or "").strip()
+    email_limpio = (email or "").strip()
+    if not nombre_limpio:
+        return "El campo nombre es obligatorio"
+    if len(nombre_limpio) > 50:
+        return "Nombre máximo 50 caracteres"
+    if not all(char.isalpha() or char.isspace() for char in nombre_limpio):
+        return "El nombre solo puede contener letras y espacios"
+    try:
+        validate_email(email_limpio, check_deliverability=False)
+    except EmailNotValidError:
+        return "Formato de correo incorrecto"
+    existentes = {usuario["email"].lower() for usuario in broker.listar("Usuario")}
+    if email_limpio.lower() in existentes:
+        return "El correo ya está registrado"
+    if rol not in {"alumno", "docente"}:
+        return "Rol inválido"
+    return None
+
+
 @router.get("/registrar_usuario", response_class=HTMLResponse)
 async def registrar_usuario_view(request: Request) -> HTMLResponse:
     admin = _require_admin(request)
+    service = AdministradorService()
     templates = request.app.state.templates
+    success = request.query_params.get("success")
+    error = request.query_params.get("error")
     return templates.TemplateResponse(
         "admin/registrar_usuario.html",
         {
@@ -34,6 +72,8 @@ async def registrar_usuario_view(request: Request) -> HTMLResponse:
             "usuario": admin,
             "nav_items": menu_for_role(admin.rol),
             "page_title": "Registrar usuarios",
+            "success": success,
+            "error": error,
         },
     )
 
@@ -41,20 +81,28 @@ async def registrar_usuario_view(request: Request) -> HTMLResponse:
 @router.post("/registrar_usuario")
 async def registrar_usuario_action(
     request: Request,
-    nombre: str = Form(...),
-    email: str = Form(...),
-    password: str = Form(...),
-    tipo: str = Form(...),
+    nombre: str = Form(""),
+    email: str = Form(""),
+    password: str = Form(""),
+    tipo: str = Form(""),
 ) -> RedirectResponse:
     _require_admin(request)
+    service = AdministradorService()
+    url = request.url_for("registrar_usuario_view")
+    error = _validar_registro_usuario(nombre, email, tipo, service.broker)
+    if error:
+        return RedirectResponse(
+            f"{url}?error={quote(error)}",
+            status_code=status.HTTP_303_SEE_OTHER,
+        )
     if tipo == "alumno":
-        service.registrarAlumno(nombre, email, password)
+        service.registrarAlumno(nombre.strip(), email.strip(), password)
     elif tipo == "docente":
-        service.registrarDocente(nombre, email, password)
+        service.registrarDocente(nombre.strip(), email.strip(), password)
     else:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Tipo invalido")
     return RedirectResponse(
-        request.url_for("dashboard"),
+        f"{url}?success={quote('Usuario creado exitosamente')}",
         status_code=status.HTTP_303_SEE_OTHER,
     )
 
@@ -62,6 +110,7 @@ async def registrar_usuario_action(
 @router.get("/crear_materia", response_class=HTMLResponse)
 async def crear_materia_view(request: Request) -> HTMLResponse:
     admin = _require_admin(request)
+    service = AdministradorService()
     templates = request.app.state.templates
     materias = service.listarMaterias()
     materia_success = request.query_params.get("materia_success")
@@ -89,6 +138,7 @@ async def crear_materia_action(
     correlativas: List[str] = Form(default=[]),
 ) -> RedirectResponse:
     admin = _require_admin(request)
+    service = AdministradorService()
     service.crearMateria(admin, nombre, codigo, descripcion, correlativas or None)
     return RedirectResponse(
         request.url_for("dashboard"),
@@ -106,6 +156,7 @@ async def actualizar_materia_action(
     correlativas: List[str] = Form(default=[]),
 ) -> RedirectResponse:
     _require_admin(request)
+    service = AdministradorService()
     url = request.url_for("crear_materia_view")
     try:
         service.actualizarMateria(materia_id, nombre, codigo, descripcion, correlativas or None)
@@ -126,6 +177,7 @@ async def eliminar_materia_action(
     materia_id: str = Form(...),
 ) -> RedirectResponse:
     _require_admin(request)
+    service = AdministradorService()
     url = request.url_for("crear_materia_view")
     try:
         service.eliminarMateria(materia_id)
@@ -143,6 +195,7 @@ async def eliminar_materia_action(
 @router.get("/crear_plan", response_class=HTMLResponse)
 async def crear_plan_view(request: Request) -> HTMLResponse:
     admin = _require_admin(request)
+    service = AdministradorService()
     templates = request.app.state.templates
     planes = service.listarPlanes()
     materias = service.listarMaterias()
@@ -179,13 +232,22 @@ async def crear_plan_view(request: Request) -> HTMLResponse:
 @router.post("/crear_plan")
 async def crear_plan_action(
     request: Request,
-    nombre: str = Form(...),
+    nombre: str = Form(""),
     descripcion: Optional[str] = Form(default=""),
 ) -> RedirectResponse:
     admin = _require_admin(request)
-    service.crearPlan(admin, nombre, descripcion)
+    service = AdministradorService()
+    url = request.url_for("crear_plan_view")
+    planes = service.listarPlanes()
+    error = _validar_nombre_plan(nombre, planes)
+    if error:
+        return RedirectResponse(
+            f"{url}?error={quote(error)}",
+            status_code=status.HTTP_303_SEE_OTHER,
+        )
+    plan = service.crearPlan(admin, nombre.strip(), (descripcion or "").strip())
     return RedirectResponse(
-        request.url_for("dashboard"),
+        f"{url}?plan_id={plan.id}&success={quote('Plan académico creado con éxito')}",
         status_code=status.HTTP_303_SEE_OTHER,
     )
 
@@ -198,6 +260,7 @@ async def actualizar_plan_action(
     descripcion: str = Form(""),
 ) -> RedirectResponse:
     _require_admin(request)
+    service = AdministradorService()
     url = request.url_for("crear_plan_view")
     try:
         service.actualizarPlan(plan_id, nombre, descripcion)
@@ -218,6 +281,7 @@ async def eliminar_plan_action(
     plan_id: str = Form(...),
 ) -> RedirectResponse:
     _require_admin(request)
+    service = AdministradorService()
     url = request.url_for("crear_plan_view")
     try:
         service.eliminarPlan(plan_id)
@@ -235,6 +299,7 @@ async def eliminar_plan_action(
 @router.get("/asignar_materia_plan", response_class=HTMLResponse)
 async def asignar_materia_plan_view(request: Request) -> HTMLResponse:
     admin = _require_admin(request)
+    service = AdministradorService()
     templates = request.app.state.templates
     planes = service.listarPlanes()
     materias = service.listarMaterias()
@@ -258,6 +323,7 @@ async def asignar_materia_plan_action(
     materias_ids: List[str] = Form(default=[]),
 ) -> RedirectResponse:
     _require_admin(request)
+    service = AdministradorService()
     url = request.url_for("crear_plan_view")
     try:
         service.asignarMateriasAPlan(plan_id, materias_ids)
@@ -275,6 +341,7 @@ async def asignar_materia_plan_action(
 @router.get("/crear_cohorte", response_class=HTMLResponse)
 async def crear_cohorte_view(request: Request) -> HTMLResponse:
     admin = _require_admin(request)
+    service = AdministradorService()
     templates = request.app.state.templates
     planes = service.listarPlanes()
     alumnos = service.listarAlumnos()
@@ -325,6 +392,7 @@ async def crear_cohorte_action(
     alumnos_ids: List[str] = Form(default=[]),
 ) -> RedirectResponse:
     admin = _require_admin(request)
+    service = AdministradorService()
     service.crearCohorte(admin, nombre, plan_id, alumnos_ids or None)
     return RedirectResponse(
         request.url_for("dashboard"),
@@ -335,6 +403,7 @@ async def crear_cohorte_action(
 @router.get("/crear_curso", response_class=HTMLResponse)
 async def crear_curso_view(request: Request) -> HTMLResponse:
     admin = _require_admin(request)
+    service = AdministradorService()
     templates = request.app.state.templates
     materias = service.listarMaterias()
     cohortes = service.listarCohortes()
@@ -381,6 +450,7 @@ async def crear_curso_action(
     docente_id: str = Form(None),
 ) -> RedirectResponse:
     admin = _require_admin(request)
+    service = AdministradorService()
     service.crearCurso(
         admin,
         nombre,
@@ -397,6 +467,7 @@ async def crear_curso_action(
 @router.get("/examenes", response_class=HTMLResponse, name="examenes_view")
 async def examenes_view(request: Request) -> HTMLResponse:
     admin = _require_admin(request)
+    service = AdministradorService()
     templates = request.app.state.templates
     planes = service.listarPlanes()
     plan_id = request.query_params.get("plan_id") if planes else None
@@ -464,6 +535,7 @@ async def crear_examen_action(
     plan_id: str = Form(...),
 ) -> RedirectResponse:
     _require_admin(request)
+    service = AdministradorService()
     url = request.url_for("examenes_view")
     try:
         if plan_id not in {plan.id for plan in service.listarPlanes() if plan.id}:
