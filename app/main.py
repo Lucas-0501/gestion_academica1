@@ -80,6 +80,37 @@ def _seed_users(broker: DBBroker) -> None:
             rol="docente",
         )
         broker.guardarObjeto(docente)
+    if "jperez" not in emails:
+        broker.guardarObjeto(
+            Alumno(
+                id=None,
+                nombre="Juan Perez",
+                email="jperez",
+                password="clave123",
+                rol="alumno",
+            )
+        )
+    if "user123" not in emails:
+        broker.guardarObjeto(
+            Alumno(
+                id=None,
+                nombre="Usuario Numerico",
+                email="user123",
+                password="clave123",
+                rol="alumno",
+            )
+        )
+    if "user_bloqueado" not in emails:
+        broker.guardarObjeto(
+            Alumno(
+                id=None,
+                nombre="Usuario Bloqueado",
+                email="user_bloqueado",
+                password="clave123",
+                rol="alumno",
+                bloqueado=True,
+            )
+        )
 
 
 def _seed_materias_planes(broker: DBBroker) -> None:

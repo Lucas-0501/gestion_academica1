@@ -12,14 +12,22 @@ class AuthService:
     def __init__(self, broker: Optional[DBBroker] = None) -> None:
         self.broker = broker or DBBroker()
 
-    def iniciarSesion(self, email: str, password: str, rol: Optional[str] = None) -> Usuario:
+    def iniciarSesion(self, usuario: str, password: str, rol: Optional[str] = None) -> Usuario:
         usuarios = self.broker.listar("Usuario")
         for data in usuarios:
-            if data["email"] == email and data["password"] == password:
+            if not self._match_usuario(data, usuario):
+                continue
+            if data.get("bloqueado"):
+                raise ValueError("Cuenta bloqueada. Contacte al administrador")
+            if data["password"] == password:
                 if rol and data.get("rol") != rol:
                     continue
                 return self._build_usuario(data)
-        raise ValueError("Credenciales invalidas")
+            raise ValueError("Credenciales inválidas")
+        raise ValueError("Credenciales inválidas")
+
+    def _match_usuario(self, data: Dict[str, object], usuario: str) -> bool:
+        return data.get("email") == usuario or data.get("username") == usuario
 
     def _build_usuario(self, data: Dict[str, object]) -> Usuario:
         tipo = data.get("type") or data.get("rol", "").capitalize()

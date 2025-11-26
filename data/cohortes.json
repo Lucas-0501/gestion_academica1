@@ -15,5 +15,13 @@
     "alumnos": [
       "5802d6c8-5394-4ca7-8e37-ac3935bc8300"
     ]
+  },
+  {
+    "id": "edf413e5-813e-44fe-ad51-f4616ee5a33a",
+    "nombre": "cohorte ing sw 2026",
+    "plan_id": "a37c5b2b-efe3-4873-88aa-d88e512ef569",
+    "alumnos": [
+      "1a69749e-8c73-4376-8216-f5e419e1c70b"
+    ]
   }
 ]

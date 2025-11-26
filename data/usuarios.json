@@ -15,6 +15,7 @@
     "password": "1234",
     "rol": "alumno",
     "sesion_activa": false,
+    "bloqueado": false,
     "type": "Alumno",
     "materiasInscripto": [
       "92c337ac-b1c2-49bd-88bc-56a7dea5526b",
@@ -25,7 +26,7 @@
       "be0bd24f-42f5-426a-a98d-86276d6c4753"
     ],
     "plan_id": "a37c5b2b-efe3-4873-88aa-d88e512ef569",
-    "cohorte_id": "32017e88-01f5-4fa2-9591-2620db0d4498"
+    "cohorte_id": "edf413e5-813e-44fe-ad51-f4616ee5a33a"
   },
   {
     "id": "40f1affe-c7fa-4ddc-bdae-83ee4541d1c9",
@@ -79,5 +80,47 @@
     ],
     "plan_id": "f4a9bdd8-57d5-4352-9665-a81580977e45",
     "cohorte_id": "175697ae-ee9e-4398-9162-3c0f9c1a3867"
+  },
+  {
+    "id": "add3a180-e15c-4209-a43e-23f4ce8f1027",
+    "nombre": "Juan Perez",
+    "email": "jperez",
+    "password": "clave123",
+    "rol": "alumno",
+    "sesion_activa": false,
+    "bloqueado": false,
+    "type": "Alumno",
+    "materiasInscripto": [],
+    "examenesInscripto": [],
+    "plan_id": null,
+    "cohorte_id": null
+  },
+  {
+    "id": "3613c754-4e10-4940-9ec7-bcd6ed5d71e8",
+    "nombre": "Usuario Numerico",
+    "email": "user123",
+    "password": "clave123",
+    "rol": "alumno",
+    "sesion_activa": false,
+    "bloqueado": false,
+    "type": "Alumno",
+    "materiasInscripto": [],
+    "examenesInscripto": [],
+    "plan_id": null,
+    "cohorte_id": null
+  },
+  {
+    "id": "1b1ac4eb-6094-4575-9be3-59124c98fdc7",
+    "nombre": "Usuario Bloqueado",
+    "email": "user_bloqueado",
+    "password": "clave123",
+    "rol": "alumno",
+    "sesion_activa": false,
+    "bloqueado": true,
+    "type": "Alumno",
+    "materiasInscripto": [],
+    "examenesInscripto": [],
+    "plan_id": null,
+    "cohorte_id": null
   }
 ]

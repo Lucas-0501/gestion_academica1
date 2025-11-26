@@ -16,6 +16,7 @@ class Usuario:
     password: str
     rol: str
     sesion_activa: bool = field(default=False)
+    bloqueado: bool = field(default=False)
 
     def iniciarSesion(self, password: str) -> bool:
         if self.password == password:
@@ -34,6 +35,7 @@ class Usuario:
             "password": self.password,
             "rol": self.rol,
             "sesion_activa": self.sesion_activa,
+            "bloqueado": self.bloqueado,
             "type": self.__class__.__name__,
         }
 
@@ -46,4 +48,5 @@ class Usuario:
             password=data["password"],
             rol=data["rol"],
             sesion_activa=data.get("sesion_activa", False),
+            bloqueado=data.get("bloqueado", False),
         )

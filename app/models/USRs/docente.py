@@ -41,5 +41,6 @@ class Docente(Usuario):
             password=data["password"],  # type: ignore[index]
             rol=data.get("rol", "docente"),  # type: ignore[arg-type]
             sesion_activa=data.get("sesion_activa", False),  # type: ignore[arg-type]
+            bloqueado=data.get("bloqueado", False),  # type: ignore[arg-type]
             materiasAsignadas=list(data.get("materiasAsignadas", [])),  # type: ignore[arg-type]
         )

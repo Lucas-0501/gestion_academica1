@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+import re
 from typing import Dict
+from urllib.parse import quote
 
 from fastapi import APIRouter, Form, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
@@ -17,7 +19,35 @@ from app.utils.auth import get_current_user, login_user, logout_user
 from app.utils.navigation import menu_for_role
 
 router = APIRouter()
-auth_service = AuthService()
+_USUARIO_REGEX = re.compile(r"^[A-Za-z0-9@._-]+$")
+
+
+def _redirect_login(request: Request, error: str) -> RedirectResponse:
+    url = request.url_for("login_view")
+    return RedirectResponse(
+        f"{url}?error={quote(error)}",
+        status_code=status.HTTP_303_SEE_OTHER,
+    )
+
+
+def _validar_usuario(usuario: str) -> str | None:
+    if not usuario:
+        return "El campo usuario es obligatorio"
+    if len(usuario) < 3:
+        return "Usuario debe tener mínimo 3 caracteres"
+    if len(usuario) > 20:
+        return "Usuario máximo 20 caracteres"
+    if not _USUARIO_REGEX.match(usuario):
+        return "Usuario solo puede contener letras y números"
+    return None
+
+
+def _validar_password(password: str) -> str | None:
+    if not password:
+        return "El campo contraseña es obligatorio"
+    if not any(char.isdigit() for char in password):
+        return "La contraseña debe contener al menos 1 número"
+    return None
 
 
 @router.get("/", response_class=HTMLResponse)
@@ -38,18 +68,27 @@ async def login_view(request: Request, error: str | None = None) -> HTMLResponse
 @router.post("/auth/login")
 async def login_action(
     request: Request,
-    email: str = Form(...),
-    password: str = Form(...),
+    usuario: str = Form(""),
+    password: str = Form(""),
 ) -> RedirectResponse:
+    usuario = usuario.strip()
+    password = password.strip()
+
+    error_msg = _validar_usuario(usuario)
+    if error_msg:
+        return _redirect_login(request, error_msg)
+
+    password_error = _validar_password(password)
+    if password_error:
+        return _redirect_login(request, password_error)
+
+    auth_service = AuthService()
     try:
-        usuario = auth_service.iniciarSesion(email, password)
-    except ValueError:
-        url = request.url_for("login_view")
-        return RedirectResponse(
-            f"{url}?error=Credenciales%20invalidas",
-            status_code=status.HTTP_303_SEE_OTHER,
-        )
-    login_user(request, usuario.to_dict())
+        usuario_obj = auth_service.iniciarSesion(usuario, password)
+    except ValueError as exc:
+        return _redirect_login(request, str(exc))
+
+    login_user(request, usuario_obj.to_dict())
     return RedirectResponse(
         request.url_for("dashboard"),
         status_code=status.HTTP_303_SEE_OTHER,
