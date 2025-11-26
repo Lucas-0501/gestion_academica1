@@ -6,9 +6,12 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import List
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.exceptions import HTTPException
+from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from starlette import status
 from starlette.middleware.sessions import SessionMiddleware
 
 from app.models.USRs import Administrador, Alumno, Docente
@@ -39,6 +42,24 @@ def create_app() -> FastAPI:
 
     app.add_middleware(SessionMiddleware, secret_key="super-secret-key")
     app.state.templates = templates
+
+    @app.exception_handler(HTTPException)
+    async def http_exception_handler(request: Request, exc: HTTPException):
+        if exc.status_code in {
+            status.HTTP_401_UNAUTHORIZED,
+            status.HTTP_403_FORBIDDEN,
+        }:
+            return templates.TemplateResponse(
+                "unauthorized.html",
+                {
+                    "request": request,
+                    "error": exc.detail if exc.detail else "Acceso restringido",
+                    "page_title": "Acceso restringido",
+                    "is_auth_page": True,
+                },
+                status_code=exc.status_code,
+            )
+        return JSONResponse({"detail": exc.detail}, status_code=exc.status_code)
 
     return app
 

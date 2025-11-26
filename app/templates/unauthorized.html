@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Acceso restringido{% endblock %}
+{% block auth_content %}
+<section class="auth-card fade-in">
+  <div class="auth-card__header">
+    <div>
+      <h1><i class="fas fa-lock"></i> Acceso restringido</h1>
+      <p>{{ error or "No tienes permisos para acceder a esta sección." }}</p>
+    </div>
+  </div>
+  <div class="auth-card__body">
+    <p>Inicia sesión con una cuenta de administrador para continuar.</p>
+    <a class="btn btn-primary" href="{{ url_for('login_view') }}">
+      <i class="fas fa-arrow-left"></i>
+      Volver al inicio de sesión
+    </a>
+  </div>
+</section>
+{% endblock %}
