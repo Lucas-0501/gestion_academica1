@@ -49,7 +49,7 @@ def test_campo_password_vacio(client):
         follow_redirects=False,
     )
     assert resp.status_code == 303
-    assert _extract_error(resp) == "El campo contrasena es obligatorio"
+    assert _extract_error(resp) == "El campo contraseña es obligatorio"
 
 
 def test_credenciales_invalidas(client):
@@ -99,7 +99,7 @@ def test_password_sin_numeros(client):
         follow_redirects=False,
     )
     assert resp.status_code == 303
-    assert _extract_error(resp) == "La contrasena debe contener al menos 1 numero"
+    assert _extract_error(resp) == "La contraseña debe contener al menos 1 número"
 
 
 def test_cuenta_bloqueada(client):

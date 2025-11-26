@@ -48,11 +48,7 @@ def _validar_password(password: str) -> str | None:
     if not any(char.isdigit() for char in password):
         return "La contraseña debe contener al menos 1 número"
     return None
-    if not password:
-        return "El campo contraseña es obligatorio"
-    if not any(char.isdigit() for char in password):
-        return "La contraseña debe contener al menos 1 número"
-    return None
+   
 
 
 @router.get("/", response_class=HTMLResponse)

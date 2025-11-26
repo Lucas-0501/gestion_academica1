@@ -135,5 +135,16 @@
       "f4577219-8ebb-45c6-a850-6790fe8e3333"
     ],
     "cupo": null
+  },
+  {
+    "id": "9c9e2545-666d-4559-a874-b76e5eab6c83",
+    "nombre": "asd",
+    "materia_id": "fff309e1-2bd3-4c62-9db1-3e243defbc1e",
+    "fecha": "2025-11-13",
+    "curso_id": "e66dedc7-f53c-44ae-a10b-8248e4c3f5d4",
+    "correlativas": [
+      "6d643667-8878-4f34-a2e0-f4be0606d5ea"
+    ],
+    "cupo": null
   }
 ]
